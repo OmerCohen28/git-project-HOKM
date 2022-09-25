@@ -1,5 +1,4 @@
 from enum import Enum
-from operator import truediv
 import random
 
 class Suit(Enum):
@@ -78,3 +77,15 @@ class Team:
         if self.points == 7:
             return True
         return False
+
+class RoundState:
+    def __init__(self,suit:Suit):
+        self.played_suit = suit
+        self.played_cards = []
+    
+class GameState:
+    def __init__(self, s_suit:Suit, teams:list[Team]):
+        self.s_suit = s_suit
+        self.teams = teams
+        self.scores = {team: 0 for team in teams}
+
