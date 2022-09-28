@@ -13,8 +13,10 @@ class LinkedList:
     def __repr__(self):
         node = self.head
         nodes = []
-        while node is not None:
-            nodes.append(node.data)
+        seen = []
+        while node is not None and not id(node) in seen :
+            seen.append(id(node))
+            nodes.append(str(node.data))
             node = node.next
         nodes.append("None")
         return " -> ".join(nodes)

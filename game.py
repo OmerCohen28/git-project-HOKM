@@ -17,6 +17,7 @@ class game:
         self.winner_tup = (None, None)
         self.game_over = False
         self.turns = LinkedList()
+        self.current_turn = Node(None)
 
     # takes a player and a card, returns (is turn valid, is round over)
     def play_card(self,player:Player,card:Card) -> tuple(bool,bool):
@@ -35,6 +36,7 @@ class game:
         
         self.round_state.played_cards.append(card)
         self.change_winner(card,player)
+        self.current_turn = self.current_turn.next
         if len(self.round_state.played_cards) == 4:
             self.increment_points()
             self.round_state.played_cards = []
@@ -43,10 +45,18 @@ class game:
             return (True, False)
     
     def increment_points(self):
+        self.current_turn = self.find_current_player_node(self.winner_tup[1])
         for team in self.teams:
             for player in team.players:
                 if player.player_id == self.winner_tup[1].player_id:
                     self.game_over = team.add_points()
+
+    def find_current_player_node(self,player:Player):
+        tmp = self.turns.head
+        while True:
+            if tmp.data.player_id == player.player_id:
+                return tmp
+            tmp = tmp.next
 
     def change_winner(self,card:Card,player:Player):
         if card.suit != self.round_state.played_suit and card.suit != self.strong_suit:
@@ -74,6 +84,7 @@ class game:
     def set_ruler(self,player:Player):
         self.ruler = player
         self.set_turns(player)
+        self.current_turn = self.turns.head
 
     def set_turns(self,player:Player):
         self.turns.head = Node(player)
@@ -115,8 +126,8 @@ class game:
     def get_game_state(self) -> GameState:
         return self.game_state
 
-    def get_next_player_turn(self) -> Player:
-        pass
+    def get_current_player_turn(self) -> Player:
+        return self.current_turn.data
         '''
         return the player's instance that has to play next
         keeping track of turns will be done via linked list
