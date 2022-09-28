@@ -17,6 +17,7 @@ class game:
     
     def set_strong_suit(self,suit:Suit):
         self.strong_suit = suit
+        self.game_state = GameState(suit, self.teams)
 
     def set_ruler(self,player:Player):
         self.ruler = player
