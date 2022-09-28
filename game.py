@@ -1,12 +1,17 @@
 from base_classes import *
 from linked_list import *
 
+
 class game:
 
     def __init__(self,players:list[Player],teams:list[Team]):
         self.deck = Deck()
         self.players = players
         self.teams = teams
+        self.game_state = GameState(None, self.teams)
+        self.round_state = RoundState(None)
+        self.winner_tup = (None, None)
+        self.game_over = False
         self.game_state = GameState(None, self.teams)
         self.round_state = RoundState(None)
         self.winner_tup = (None, None)
