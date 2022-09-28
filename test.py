@@ -1,4 +1,3 @@
-from platform import node
 from linked_list import *
 
 llist = LinkedList()
@@ -9,9 +8,9 @@ llist.head.next = node1
 node1.next = node2
 node2.next = llist.head
 
-
-tmp = llist.head
-
-while True:
-    print(tmp.data)
-    tmp = tmp.next
+hye = llist.head
+print(hye.data)
+hye = hye.next
+hye = hye.next
+hye = hye.next
+print(hye.data)

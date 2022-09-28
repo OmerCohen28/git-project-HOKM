@@ -20,7 +20,9 @@ class game:
         self.current_turn = Node(None)
 
     # takes a player and a card, returns (is turn valid, is round over)
-    def play_card(self,player:Player,card:Card) -> tuple(bool,bool):
+    def play_card(self,player:Player,card:Card):
+        if not player.player_id == self.current_turn.data.player_id:
+            return (False,False)
         try:
             player.hand.index(card) #checking wether the player has the cards he wants to play
         except ValueError as e:
@@ -63,7 +65,7 @@ class game:
             return
         if self.winner_tup[0].suit == self.strong_suit:
             if card.suit == self.strong_suit:
-                if card.rank > self.winner_tup[0].rank:
+                if card.rank.val > self.winner_tup[0].rank.val:
                     self.winner_tup = (card,player)
             else:
                 return
@@ -71,7 +73,7 @@ class game:
             if card.suit == self.strong_suit:
                 self.winner_tup = (card,player)
             else:
-                if card.rank > self.winner_tup[0].rank:
+                if card.rank.val > self.winner_tup[0].rank.val:
                     self.winner_tup = (card,player)
             
 
@@ -90,7 +92,7 @@ class game:
         self.turns.head = Node(player)
         opposite_team = None
         own_team = None
-        if player in self.teams[0]:
+        if player in self.teams[0].players:
             opposite_team = self.teams[1]
             own_team = self.teams[0]
         else:
@@ -133,3 +135,29 @@ class game:
         keeping track of turns will be done via linked list
         '''
 
+def test_game():
+    player1 = Player()
+    player2 = Player()
+    player3 = Player()
+    player4 = Player()
+    team1 = Team([player1,player2])
+    team2 = Team([player3,player4])
+    igame = game([player1,player2,player3,player4],[team1,team2])
+    print(len(igame.players))
+    igame.set_ruler(player1)
+    igame.set_strong_suit(Suit(1))
+    for i in range(2):
+        for player in igame.players:
+            igame.hand_cards_to_player(player)
+    
+    for player in igame.players:
+        print(f"playerid {player.player_id} ------------------")
+        for card in player.hand:
+            print(f"suit {card.suit}, rank {card.rank}")
+    
+    print(igame.play_card(player1,player1.hand[1]))
+    print(igame.current_turn.data.player_id)
+    print(igame.play_card(player2,player2.hand[1]))    
+    print(igame.play_card(player3,player3.hand[1]))
+
+test_game()

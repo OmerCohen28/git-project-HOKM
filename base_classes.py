@@ -21,6 +21,10 @@ class Rank(Enum):
     rank_Q=11
     rank_K=12
     rank_A=13
+    
+    def __init__(self,val) -> None:
+        super().__init__()
+        self.val = val
 
 class Card:
     def __init__(self,suit:Suit,rank:Rank):
@@ -88,4 +92,3 @@ class GameState:
         self.s_suit = s_suit
         self.teams = teams
         self.scores = {team: 0 for team in teams}
-
