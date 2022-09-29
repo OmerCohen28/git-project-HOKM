@@ -159,5 +159,3 @@ def test_game():
     print(igame.current_turn.data.player_id)
     print(igame.play_card(player2,player2.hand[1]))    
     print(igame.play_card(player3,player3.hand[1]))
-
-test_game()

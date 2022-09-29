@@ -7,6 +7,10 @@ class Suit(Enum):
     DIAMONDS = 3
     HEARTS = 4
 
+    def __init__(self,val) -> None:
+        super().__init__()
+        self.val = val
+
 class Rank(Enum):
     rank_1=1
     rank_2=2

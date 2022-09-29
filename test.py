@@ -1,16 +1,15 @@
 from linked_list import *
+from base_classes import *
+import json
 
-llist = LinkedList()
-llist.head = Node(1)
-node1 = Node(2)
-node2 = Node(3)
-llist.head.next = node1
-node1.next = node2
-node2.next = llist.head
 
-hye = llist.head
-print(hye.data)
-hye = hye.next
-hye = hye.next
-hye = hye.next
-print(hye.data)
+suit = Suit(1)
+rank = Rank(3)
+card = Card(suit,rank)
+di = {"suit":card.suit.val,"rank":card.rank.val}
+dumped = dict(eval(json.dumps(di)))
+print(type(dumped))
+print(dumped)
+
+c = Card(Suit(dumped["suit"]),Rank(dumped["rank"]))
+print(c.suit,c.rank)
