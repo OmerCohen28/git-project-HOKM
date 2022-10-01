@@ -1,6 +1,6 @@
 from socket import *
 
-''''
+'''
 classes to implement, base idea
 '''
 
