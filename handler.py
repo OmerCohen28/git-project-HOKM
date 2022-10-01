@@ -15,7 +15,7 @@ TODO:
     test all functions together in a demo game
 '''
 
-class server:
+class handler:
     def __init__(self, player_socket_dict:dict[Player:socket]) -> None:
         self.player_socket_dict = player_socket_dict
         self.conn_sock = socket(AF_INET,SOCK_STREAM)
@@ -95,5 +95,17 @@ game flow:
     call send_cards() second time
     call send_game_state()
     call send_round_state()
+
+'''
+
+''''
+    *everyone connects*
+    call send_cards() once
+    call decide_ruler()
+    call decite_strong_suit()
+    call send_cards() second time
+    call send_game_state()
+    call send_round_state()
+
 
 '''
