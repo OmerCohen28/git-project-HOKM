@@ -10,6 +10,7 @@ namespace WindowsFormsApp4.Instances
     public class Hand
     {
         private Card[] cards;
+        private Control.ControlCollection controls;
         public Hand(Card[] cards) {
             this.cards = cards;
         }
@@ -38,9 +39,15 @@ namespace WindowsFormsApp4.Instances
         }
 
         public Card[] Cards { get => cards; set => cards = value; }
+        public void AddCard(Card c) {
+            List<Card> Cards = new List<Card>(cards);
+            Cards.Append(c);
+            this.cards = Cards.ToArray();
+        }
 
         public void AddControls(Control.ControlCollection controls)
         {
+            this.controls = controls;
             for (int i = 0; i < cards.Length; i++) controls.Add(cards[i]);
         }
     }

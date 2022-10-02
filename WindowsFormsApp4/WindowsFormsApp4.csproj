@@ -90,5 +90,167 @@
   <ItemGroup>
     <None Include="Resources\הורדה.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1SPADE.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Aspade.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-2-column-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-3-column-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-4-column-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row-1-column-1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
