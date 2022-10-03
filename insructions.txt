@@ -1,0 +1,59 @@
+CARDS:
+    card format: suit*rank
+    SUITS:
+        SPADES
+        CLUBS
+        DIAMONDS
+        HEARTS
+    RANKS:
+        rank_1
+        rank_2
+        rank_3
+        rank_4
+        rank_5
+        rank_6
+        rank_7
+        rank_8
+        rank_9
+        rank_J
+        rank_Q
+        rank_K
+        rank_A
+TEAMS:
+    team format: [client_id1]+[client_id2]
+
+action: connect to server
+response: recv self player id
+FORMAT: "client_id:[id]"
+
+action: wait for all players to join
+response: sending who the ruler[msg1] is and the first 5 cards[msg2]
+FORMAT_msg1: "ruler:[client_id]"
+FORMAT_msg2: "card|card|card|card|card"
+
+action[if ruler]: send to server the strong suit[msg]
+response[if ruler]: server sends "ok" if fine or "bad" if not to ruler
+FORMAT_msg: "set_strong:[SUIT]"
+
+server sending remaining cards[msg1] to players and sending teams and strong suit[msg2] to all players
+FORMAT_msg1: "card|card|card|card|card|card|card|card|card|card|card|card|card"
+FORMAT_msg2: "teams:[team1]|[team2],strong:[SUIT]"
+
+TURNS
+
+action: wait for server to tell the player turn is up with the status of the round[msg1]
+response: play card[msg2] and wait for "ok" from server if card is fine, if there is an error with card formatting
+the server will send "bad_card" or if the card is illegal to play the server will send "bad_play"
+FORMAT_msg1: "played_suit:[SUIT - empty if first],played_cards:[card|card|card|card - may be 0,1,2,3 cards]"
+FORMAT_msg2: "play_card:[card]"
+
+action: wait for server to send the winner of the round and the points[msg]
+FORMAT_msg: round_winner:[team],scores:[team]*[points]|[team]*[points]
+
+action: repeat turns until a team reach 7 points
+response: server sends "GAME_OVER" and closes
+
+
+***********************
+if player disconnect the server will send to all players "PLAYER_DISCONNECTED" and shut down because the game can't continue
+

@@ -19,6 +19,8 @@ class Server:
 
         self.run = False
 
+        self.server_gui_sock = None
+
     def __setup_socket(self):
         """
         setting up the server socket object
@@ -67,6 +69,15 @@ class Server:
 
         self.__messages_to_send.append((client_sock, msg))
 
+    def send_to_server_gui(self, msg):
+        """
+        adding the message that nee to be sent to the server gui to the message list
+        :param msg: str
+        :return:
+        """
+
+        self.__messages_to_send.append((self.server_gui_sock, msg))
+
     def send_all(self, msg):
         """
                 adding message that need to be sent to the message list for all players
@@ -80,12 +91,11 @@ class Server:
     def _handle_data(self, client_id, msg, msg_type="data"):
         """
         method to be overwritten by handler class
-        :return: True or None if server need to be closed
+        :return: None
         """
         # example - echo and not closing the server
         if msg_type == "data":
             self.send_message(client_id, msg)
-        return False
 
     def __main_loop(self):
         """
@@ -109,9 +119,12 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    self.__client_ids[new_client] = len(self.__clients)
+                    if len(self.__clients) > 1:
+                        self.__client_ids[new_client] = len(self.__clients)
 
-                    self._handle_data(len(self.__clients), "", msg_type="new_client")
+                        self._handle_data(len(self.__clients), "", msg_type="new_client")
+                    else:
+                        self.server_gui_sock = new_client
 
                 # handling client request
                 else:
