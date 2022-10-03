@@ -1,81 +1,158 @@
-from socket import *
 from base_classes import *
-from select import select
-from game import game
+from server import Server
+from game import Game
 import json
 import random
 import time
 
 
-'''
-TODO:
-    finish game functions + documantation
-    finish game flow comment
-    update ALL json to work as specified in test.py
-    test all functions together in a demo game
-'''
+BAD_CARD_MSG = "bad_card"
+BAD_PLAY_MSG = "bad_play"
 
-class handler:
-    def __init__(self, player_socket_dict:dict[Player:socket]) -> None:
-        self.player_socket_dict = player_socket_dict
-        self.conn_sock = socket(AF_INET,SOCK_STREAM)
-        self.conn_sock.bind((gethostbyname(gethostname()),50500))
-        self.conn_sock.listen(2)
-        players = list(player_socket_dict.keys())
-        self.game = game(players,[Team([players.pop(1-i) for i in range(2)]),Team([players.pop(1-i) for i in range(2)])])
- 
-    '''
-    function that goes through each player handing them their cards and sending their new player object back to them
-    '''
-    def send_cards(self):
-        for player in self.game.players:
-            self.game.hand_cards_to_player(player)
-            self.player_socket_dict[player].send(json.dumps("getting cards"))
-            self.player_socket_dict[player].send(json.dumps(player))
-    
-    '''
-    picks the ruler of the game randomly
-    '''
-    def decide_ruler(self):
+DELAY_BETWEEN_TURNS_IN_SEC = 1.2
+
+
+def list_to_str(lst):
+    return "|".join([str(item) for item in lst])
+
+
+class Handler(Server):
+    def __init__(self, ip="0.0.0.0", port=55555):
+        super().__init__(ip, port)
+
+        self.players = []
+        self.game = None
+        self.current_player = None
+
+    def _handle_data(self, client_id: int, msg: str, msg_type="data"):
+        """
+        function that handles the requests of the players and manages the game
+        :param client_id: int - id of the player who sent the request
+        :param msg: str - the request of the player
+        :param msg_type: str - the type of request that the player sent
+        :return: bool - True if the server need to be shut down and False otherwise
+        """
+
+        if msg_type == "new_client":
+            self.handle_new_player(client_id)
+        elif msg_type == "client_disconnected":
+            self.handle_player_disconnect(client_id)
+        else:
+            if msg.startswith("set_strong:"):
+
+                suit = msg[len("set_strong:"):]
+                self.handle_set_strong_suit(client_id, suit)
+            elif msg.startswith("play_card:"):
+
+                card = msg[len("play_card:"):]
+                self.handle_play_card(client_id, card)
+
+    def handle_set_strong_suit(self, client_id, suit):
+        if client_id != self.game.ruler.player_id:
+            return
+
+        if self.game.strong_suit is not None:
+            return
+
+        if suit not in Suit.__members__:
+            self.send_message(client_id, BAD_CARD_MSG)
+        else:
+            self.game.set_strong_suit(Suit[suit])
+            self.send_message(client_id, "ok")
+
+            self.game.hand_cards_for_all()
+
+            # sends remaining cards for all players in format: suit*rank|suit*rank...
+            for player in self.game.players:
+                self.send_message(player.player_id, list_to_str(player.hand))
+
+            # format like this: "teams:1+3|2+4,strong:DIAMONDS"
+            self.send_all(f"teams:{list_to_str(self.game.teams)},strong:{suit}")
+
+            self.start_turn()
+
+    def start_turn(self):
+        player = self.game.get_current_player_turn()
+        self.current_player = player
+
+        round_status = self.game.get_round_state()
+
+        msg = f"played_suit:{'' if round_status.played_suit is None else round_status.played_suit.name},played_cards:{list_to_str(round_status.played_cards)}"
+        self.send_message(player.player_id, msg)
+
+    def handle_play_card(self, client_id, str_card):
+        if self.current_player is None or client_id != self.current_player.player_id:
+            return
+
+        str_card = str_card.split("*")
+
+        if len(str_card) != 2:
+            self.send_message(client_id, BAD_CARD_MSG)
+            return
+
+        suit, rank = str_card
+        if suit not in Suit.__members__ or rank not in Rank.__members__:
+            self.send_message(client_id, BAD_CARD_MSG)
+
+        card = Card(Suit[suit], Rank[rank])
+
+        valid, round_over_team = self.game.play_card(self.current_player, card)
+
+        if not valid:
+            self.send_message(client_id, BAD_PLAY_MSG)
+            return
+
+        self.send_message(client_id, "ok")
+
+        if round_over_team:
+            game_state = self.game.get_game_state()
+            scores = game_state.scores
+
+            self.send_all(f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
+
+            if self.game.game_over:
+                self.handle_game_over()
+                return
+
+        time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
+
+        # start new turn
+        self.start_turn()
+
+    def handle_new_player(self, client_id):
+        p = Player()
+        self.players.append(p)
+
+        self.send_message(client_id, f"client_id:{client_id}")
+
+        if len(self.players) == 4:
+            self.start_game()
+
+    def start_game(self):
+        random.shuffle(self.players)
+        team1 = Team(self.players[:2])
+        team2 = Team(self.players[2:])
+
+        self.game = Game(self.players, [team1, team2])
+
         ruler = random.choice(self.game.players)
         self.game.set_ruler(ruler)
 
-    '''
-    asks the ruler what is the game's strong suit and updates it, call this function only after calling 'send_cards()' once
-    expectes to get an int representing the suit in return:
-            SPADES = 1
-            CLUBS = 2
-            DIAMONDS = 3
-            HEARTS = 4
-    '''
-    def decide_strong_suit(self):
-        self.player_socket_dict[self.game.ruler].send(json.dumps("what is the strong suit?"))
-        strong_suit = json.loads(self.player_socket_dict[self.game.ruler].recv(1054))
-        self.game.set_strong_suit(Suit(int(strong_suit)))
-    
-    '''
-    sends game and round state to all players, call after every action taken when game started
-    slight pause between each send to give the player time to clear the buffer for the object
-    '''
-    def send_game_state(self):
+        self.send_all(f"ruler:{ruler.player_id}")
+
+        self.game.hand_cards_for_all()
+
+        # sends cards for all players in format: suit*rank,suit*rank...
         for player in self.game.players:
-            self.player_socket_dict[player].send(json.dumps("game state"))
-            time.sleep(1)
-            self.player_socket_dict[player].send(json.dumps(self.game.get_game_state()))
+            self.send_message(player.player_id, list_to_str(player.hand))
 
-    def send_round_state(self):
-        for player in self.game.players:
-            self.player_socket_dict[player].send(json.dumps("round state"))
-            time.sleep(1)
-            self.player_socket_dict[player].send(json.dumps(self.game.get_round_state()))
+    def handle_player_disconnect(self, client_id):
+        pass
 
-    def play_card(self):
-        player_turn = self.game.get_current_player_turn()
-        player_sock = self.player_socket_dict[player_turn]
-        player_sock.send(json.dumps("play card"))
-        
+    def handle_game_over(self):
+        self.run = False
 
-ser = server({Player():1,Player():2,Player():3,Player():4})
+
 
 '''
 get-game-state() //at start of game and after every round

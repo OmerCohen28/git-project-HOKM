@@ -17,6 +17,8 @@ class Server:
         self.__messages_to_send = []
         self.__setup_socket()
 
+        self.run = False
+
     def __setup_socket(self):
         """
         setting up the server socket object
@@ -65,6 +67,16 @@ class Server:
 
         self.__messages_to_send.append((client_sock, msg))
 
+    def send_all(self, msg):
+        """
+                adding message that need to be sent to the message list for all players
+                :param msg: str
+                :return: None
+                """
+
+        for client_sock in self.__clients:
+            self.__messages_to_send.append((client_sock, msg))
+
     def _handle_data(self, client_id, msg, msg_type="data"):
         """
         method to be overwritten by handler class
@@ -81,9 +93,9 @@ class Server:
         :return: None
         """
         print("server started")
-        run = True
+        self.run = True
         # main server loop
-        while run:
+        while self.run:
             rlist, wlist, _ = select(self.__clients + [self.__server_socket], self.__clients, [])
 
             # handling readable sockets
@@ -99,8 +111,7 @@ class Server:
                     self.__clients.append(new_client)
                     self.__client_ids[new_client] = len(self.__clients)
 
-                    # maybe add after handler class is ready
-                    # self._handle_data(len(self.__clients), "", msg_type="new_client")
+                    self._handle_data(len(self.__clients), "", msg_type="new_client")
 
                 # handling client request
                 else:
@@ -108,12 +119,11 @@ class Server:
 
                     if not success:
                         self.__close_client(sock)
-                        # maybe add after handler class is ready
-                        # self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
+                        self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
                         continue
 
-                    out = self._handle_data(self.__client_ids[sock], msg)
-                    if out is True:
+                    self._handle_data(self.__client_ids[sock], msg)
+                    if not self.run:
                         self.close()
                         return
 

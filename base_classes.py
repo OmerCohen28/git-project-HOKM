@@ -35,6 +35,9 @@ class Card:
         self.suit = suit
         self.rank=rank
 
+    def __str__(self):
+        return f"{self.suit.name}*{self.rank.name}"
+
 class Deck:
     def __init__(self):
         self.cards = []
@@ -85,6 +88,9 @@ class Team:
         if self.points == 7:
             return True
         return False
+
+    def __str__(self):  # print like this for player id 1 and 3 -> "1+3"
+        return "+".join([str(player.player_id) for player in self.players])
 
 class RoundState:
     def __init__(self,suit:Suit):
