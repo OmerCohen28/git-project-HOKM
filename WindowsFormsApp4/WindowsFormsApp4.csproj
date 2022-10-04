@@ -85,16 +85,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\background.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\הורדה.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\1SPADE.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Aspade.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\row-1-column-2.png" />

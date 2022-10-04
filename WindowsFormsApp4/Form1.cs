@@ -13,7 +13,6 @@ namespace WindowsFormsApp4
 {
     public partial class Form1 : Form
     {
-        Random rand = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -25,8 +24,9 @@ namespace WindowsFormsApp4
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public static void button1_Click(object sender, EventArgs e)
         {
+            Random rand = new Random();
             Card card = ((Card)sender);
             card.Rank = rand.Next(1, 13);
         }

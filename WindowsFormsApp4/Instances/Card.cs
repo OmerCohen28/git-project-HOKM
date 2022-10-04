@@ -19,6 +19,7 @@ namespace WindowsFormsApp4.Instances
             base.Size = size;
             base.UseVisualStyleBackColor = true;
             base.Anchor = System.Windows.Forms.AnchorStyles.None;
+            base.Click += new System.EventHandler(Form1.button1_Click);
             UpdateImage();
         }
 
