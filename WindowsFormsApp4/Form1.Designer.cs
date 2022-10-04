@@ -1,4 +1,5 @@
-﻿using WindowsFormsApp4.Instances;
+﻿using System;
+using WindowsFormsApp4.Instances;
 
 namespace WindowsFormsApp4
 {
@@ -43,47 +44,53 @@ namespace WindowsFormsApp4
 
         #endregion
 
+        private void UpdateCards(Hand[] hands, Card[] cards) {
+            this.hands = hands;
+            this.deck = cards;
+        }
+
         private void AfterInitializeComponent() {
             this.SuspendLayout();
 
             //
-            // other cards
-            //
-            Card card3 = new Card(3, "Diamonds");
-            Card card4 = new Card(11, "Spades");
-            Card card5 = new Card(9, "Hearts");
-            //
             // hands
             //
             // Adding the cards to the hands
-            this.bottom_hand = new Hand(new Card[] { card3, card4, card5 });
-            this.top_hand = new Hand(new Card[] { new Card(1, "Spades"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
-            this.left_hand = new Hand(new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
-            this.right_hand = new Hand(new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
-            this.deck = new Hand(new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
+            this.hands[0] = new Hand(new Card[] { new Card(1, "Spades"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
+            this.hands[1] = new Hand(new Card[] { new Card(1, "Spades"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
+            this.hands[2] = new Hand(new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
+            this.hands[3] = new Hand(new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") });
+            this.deck = new Card[] { new Card(7, "Hearts"), new Card(9, "Diamonds"), new Card(1, "Clubs") };
+
+            this.ResumeLayout(false);
+
+            UpdateView();
+        }
+
+        private void UpdateView()
+        {
+            this.SuspendLayout();
+
             // Configuring the hand's display
-            this.bottom_hand.SetUp(400, 330, 8, 'x', System.Windows.Forms.AnchorStyles.Bottom);
-            this.top_hand.SetUp(400, 70, 8, 'x', System.Windows.Forms.AnchorStyles.Top);
-            this.left_hand.SetUp(50, 200, 8, 'y', System.Windows.Forms.AnchorStyles.Left);
-            this.right_hand.SetUp(750, 200, 8, 'y', System.Windows.Forms.AnchorStyles.Right);
-            this.deck.SetUp(400, 200, -55, 'x');
-            // 
-            // Form1
-            // 
+            this.hands[0].SetUp(400, 330, 8, 'x', System.Windows.Forms.AnchorStyles.Bottom);
+            this.hands[1].SetUp(400, 70, 8, 'x', System.Windows.Forms.AnchorStyles.Top);
+            this.hands[2].SetUp(50, 200, 8, 'y', System.Windows.Forms.AnchorStyles.Left);
+            this.hands[3].SetUp(750, 200, 8, 'y', System.Windows.Forms.AnchorStyles.Right);
+
             // Adding hands to the form
-            this.bottom_hand.AddControls(this.Controls);
-            this.top_hand.AddControls(this.Controls);
-            this.left_hand.AddControls(this.Controls);
-            this.right_hand.AddControls(this.Controls);
-            this.deck.AddControls(this.Controls);
+            this.hands[0].AddControls(this.Controls);
+            this.hands[1].AddControls(this.Controls);
+            this.hands[2].AddControls(this.Controls);
+            this.hands[3].AddControls(this.Controls);
+            foreach (Card c in deck)
+            {
+                this.Controls.Add(c);
+            }
 
             this.ResumeLayout(false);
         }
 
-        private Hand bottom_hand;
-        private Hand top_hand;
-        private Hand left_hand;
-        private Hand right_hand;
-        private Hand deck;
+        private Hand[] hands = new Hand[4];
+        private Card[] deck = new Card[4];
     }
 }

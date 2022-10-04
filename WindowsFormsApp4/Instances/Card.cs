@@ -226,5 +226,13 @@ namespace WindowsFormsApp4.Instances
 
         public override string Text { get => this.Image != null? "" : rank.ToString() + type; }
 
+        public static Card GetCardFromStr(string card)
+        {
+            if (card == "") return null;
+            string[] atr = card.Split('*');
+            atr[0] = atr[0][5].ToString().Replace("J", "11").Replace("Q", "12").Replace("K", "13").Replace("A", "1");
+            return new Card(int.Parse(atr[0]), atr[1]);
+        }
+
     }
 }
