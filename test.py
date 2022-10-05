@@ -1,15 +1,9 @@
+from ast import pattern
 from linked_list import *
 from base_classes import *
 import json
+import re
 
+s = "client id:5"
 
-suit = Suit(1)
-rank = Rank(3)
-card = Card(suit,rank)
-di = {"suit":card.suit.val,"rank":card.rank.val}
-dumped = dict(eval(json.dumps(di)))
-print(type(dumped))
-print(dumped)
-
-c = Card(Suit(dumped["suit"]),Rank(dumped["rank"]))
-print(c.suit,c.rank)
+print(type(re.findall(string = s, pattern=r":([1-9]{0,})$")[0]))
