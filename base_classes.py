@@ -12,19 +12,19 @@ class Suit(Enum):
         self.val = val
 
 class Rank(Enum):
-    rank_2=2
-    rank_3=3
-    rank_4=4
-    rank_5=5
-    rank_6=6
-    rank_7=7
-    rank_8=8
-    rank_9=9
-    rank_10=10
-    rank_J=11
-    rank_Q=12
-    rank_K=13
-    rank_A=14
+    rank_2=1
+    rank_3=2
+    rank_4=3
+    rank_5=4
+    rank_6=5
+    rank_7=6
+    rank_8=7
+    rank_9=8
+    rank_10=9
+    rank_J=10
+    rank_Q=11
+    rank_K=12
+    rank_A=13
     
     def __init__(self,val) -> None:
         super().__init__()
