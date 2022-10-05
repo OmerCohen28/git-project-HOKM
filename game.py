@@ -48,6 +48,9 @@ class Game:
         self.round_state.played_cards.append(card)
         self.change_winner(card,player)
         self.current_turn = self.current_turn.next
+
+        player.hand.remove(card)
+
         if len(self.round_state.played_cards) == 4:
             winning_team = self.increment_points()
             self.round_state.played_cards = []
