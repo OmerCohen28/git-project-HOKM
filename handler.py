@@ -9,19 +9,13 @@ import time
 
 '''
 TODO:
-    finish game functions + documantation
-    finish game flow comment
-    update ALL json to work as specified in test.py
-    test all functions together in a demo game
+    change handler to class to work with server class
+    integrate it into server
 '''
 
 class handler:
-    def __init__(self, player_socket_dict:dict[Player:socket]) -> None:
-        self.player_socket_dict = player_socket_dict
-        self.conn_sock = socket(AF_INET,SOCK_STREAM)
-        self.conn_sock.bind((gethostbyname(gethostname()),50500))
-        self.conn_sock.listen(2)
-        players = list(player_socket_dict.keys())
+    def __init__(self, players:list[Player]) -> None:
+        self.players = players
         self.game = game(players,[Team([players.pop(1-i) for i in range(2)]),Team([players.pop(1-i) for i in range(2)])])
  
     '''
@@ -75,30 +69,9 @@ class handler:
         player_sock.send(json.dumps("play card"))
         
 
-ser = server({Player():1,Player():2,Player():3,Player():4})
-
-'''
-get-game-state() //at start of game and after every round
-decide-ruler() // start of game before handing cards
-decide-strong-suit() // after handing cards once
-take-cards() //2 times
-player-played() //get new round state
-you-play() //
-game-over()
-'''
-
-'''
-game flow:
-    call send_cards() once
-    call decide_ruler()
-    call decite_strong_suit()
-    call send_cards() second time
-    call send_game_state()
-    call send_round_state()
-
-'''
 
 ''''
+game flow:
     *everyone connects*
     call send_cards() once
     call decide_ruler()
@@ -106,6 +79,10 @@ game flow:
     call send_cards() second time
     call send_game_state()
     call send_round_state()
-
-
+    (loop till game is done):
+        call is_game_over()
+        (loop till round is over):
+            call play_card() //it is called for different player each time
+            call send_round_state()
+        call send_game_state()
 '''
