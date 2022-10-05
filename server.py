@@ -17,6 +17,10 @@ class Server:
         self.__messages_to_send = []
         self.__setup_socket()
 
+        self.run = False
+
+        self.server_gui_sock = None
+
     def __setup_socket(self):
         """
         setting up the server socket object
@@ -65,15 +69,33 @@ class Server:
 
         self.__messages_to_send.append((client_sock, msg))
 
+    def send_to_server_gui(self, msg):
+        """
+        adding the message that nee to be sent to the server gui to the message list
+        :param msg: str
+        :return:
+        """
+
+        self.__messages_to_send.append((self.server_gui_sock, msg))
+
+    def send_all(self, msg):
+        """
+                adding message that need to be sent to the message list for all players
+                :param msg: str
+                :return: None
+                """
+
+        for client_sock in self.__clients:
+            self.__messages_to_send.append((client_sock, msg))
+
     def _handle_data(self, client_id, msg, msg_type="data"):
         """
         method to be overwritten by handler class
-        :return: True or None if server need to be closed
+        :return: None
         """
         # example - echo and not closing the server
         if msg_type == "data":
             self.send_message(client_id, msg)
-        return False
 
     def __main_loop(self):
         """
@@ -81,9 +103,9 @@ class Server:
         :return: None
         """
         print("server started")
-        run = True
+        self.run = True
         # main server loop
-        while run:
+        while self.run:
             rlist, wlist, _ = select(self.__clients + [self.__server_socket], self.__clients, [])
 
             # handling readable sockets
@@ -97,10 +119,12 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    self.__client_ids[new_client] = len(self.__clients)
+                    if len(self.__clients) > 1:
+                        self.__client_ids[new_client] = len(self.__clients)
 
-                    # maybe add after handler class is ready
-                    # self._handle_data(len(self.__clients), "", msg_type="new_client")
+                        self._handle_data(len(self.__clients), "", msg_type="new_client")
+                    else:
+                        self.server_gui_sock = new_client
 
                 # handling client request
                 else:
@@ -108,12 +132,11 @@ class Server:
 
                     if not success:
                         self.__close_client(sock)
-                        # maybe add after handler class is ready
-                        # self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
+                        self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
                         continue
 
-                    out = self._handle_data(self.__client_ids[sock], msg)
-                    if out is True:
+                    self._handle_data(self.__client_ids[sock], msg)
+                    if not self.run:
                         self.close()
                         return
 

@@ -2,7 +2,7 @@ from base_classes import *
 from linked_list import *
 
 
-class game:
+class Game:
 
     def __init__(self,players:list[Player],teams:list[Team]):
         self.deck = Deck()
@@ -18,6 +18,8 @@ class game:
         self.game_over = False
         self.turns = LinkedList()
         self.current_turn = Node(None)
+        self.ruler = None
+        self.strong_suit = None
 
     # takes a player and a card, returns (is turn valid, is round over)
     def play_card(self,player:Player,card:Card):
@@ -40,9 +42,10 @@ class game:
         self.change_winner(card,player)
         self.current_turn = self.current_turn.next
         if len(self.round_state.played_cards) == 4:
-            self.increment_points()
+            winning_team = self.increment_points()
             self.round_state.played_cards = []
-            return (True, True)
+            self.round_state.played_suit = None
+            return (True, winning_team)
         else:
             return (True, False)
     
@@ -52,6 +55,8 @@ class game:
             for player in team.players:
                 if player.player_id == self.winner_tup[1].player_id:
                     self.game_over = team.add_points()
+                    self.game_state.scores[team] += 1
+                    return team
 
     def find_current_player_node(self,player:Player):
         tmp = self.turns.head
@@ -122,6 +127,10 @@ class game:
         if player doesnt have cards, deal 5, if player does have cards, deal another 8
         '''
 
+    def hand_cards_for_all(self):
+        for player in self.players:
+            self.hand_cards_to_player(player)
+
     def get_round_state(self) -> RoundState:
         return self.round_state
         
@@ -142,7 +151,7 @@ def test_game():
     player4 = Player()
     team1 = Team([player1,player2])
     team2 = Team([player3,player4])
-    igame = game([player1,player2,player3,player4],[team1,team2])
+    igame = Game([player1,player2,player3,player4],[team1,team2])
     print(len(igame.players))
     igame.set_ruler(player1)
     igame.set_strong_suit(Suit(1))
