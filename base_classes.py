@@ -1,4 +1,5 @@
 from enum import Enum
+from operator import truediv
 import random
 
 class Suit(Enum):
@@ -37,6 +38,11 @@ class Card:
 
     def __str__(self):
         return f"{self.suit.name}*{self.rank.name}"
+    
+    def __eq__(self,other):
+        if self.rank == other.rank and self.suit == other.suit:
+            return True
+        return False
 
 class Deck:
     def __init__(self):

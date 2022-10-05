@@ -119,7 +119,7 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    if len(self.__clients) > 1:
+                    if len(self.__clients) > 1 or True:
                         self.__client_ids[new_client] = len(self.__clients)
 
                         self._handle_data(len(self.__clients), "", msg_type="new_client")
@@ -196,6 +196,6 @@ class Server:
 
 
 # for testing purposes
-# if __name__ == "__main__":
-    # s = Server("0.0.0.0", 55555)
-    # s.start()
+if __name__ == "__main__":
+     s = Server("0.0.0.0", 55555)
+     s.start()

@@ -25,16 +25,22 @@ class Game:
     def play_card(self,player:Player,card:Card):
         if not player.player_id == self.current_turn.data.player_id:
             return (False,False)
-        try:
+        '''try:
+            print(card)
+            print(*player.hand,sep=" , ")
             player.hand.index(card) #checking wether the player has the cards he wants to play
         except ValueError as e:
             print(e)
+            return (False, False)'''
+        if card not in player.hand:
             return (False, False)
         if self.round_state.played_suit == None:
             self.round_state.played_suit = card.suit
             self.winner_tup = (card, player)
         elif self.round_state.played_suit != card.suit:
             if self.round_state.played_suit in [c.suit for c in player.hand]:
+                print(card)
+                print(*player.hand,sep=" , ")
                 print("card doesn't match round suit while player has matching card")
                 return (False, False)
         
