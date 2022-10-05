@@ -1,59 +1,54 @@
-CARDS:
-    card format: suit*rank
+general game flow:
+    1) connect to server and receive client id
+    2) wait for all players to join
+    3) server sends to all players who the ruler is and the first 5 cards
+    4) the ruler sends the strong suit to the server, and the server respond to the ruler "ok" if the suit is fine and "bad" otherwise
+    5) server sends all 13 cards to all players and sends the strong suit to all players and the teams as well
+    *game starts*
+    6) server sends the status of the round to the player that their turn is happening
+    7) The player whose turn occurs sends to the server the card he wants to play
+    8) server response to the player "ok" if card is fine or "bad_card" if the card is not well formatted or "bad_play" if the card is against the rules
+    9) once the round ends the server sends to all players which team won the round and the score of each team
+    10) repeat from (6). if a team reached 7 points the server will send "GAME_OVER" and shut down
+
+    ** if a player disconnect the server will send "PLAYER_DISCONNECTED" and shut down because the game can't continue
+
+Formatting of game flow:
+    1) client id in format: "client_id:[id in number from 1-4]"
+    3) sends in 2 messages (in order):
+        1)the ruler: "ruler:[client_id]"
+        2)the first 5 cards: "card|card|card|card|card"
+    4) two stages:
+        1) strong suit: "set_strong:[SUIT]"
+        2) server response: "ok" or "bad"
+    5) sends in 2 messages (in order):
+        1) the 13 cards: "card|card|card|card|card|card|card|card|card|card|card|card|card"
+        2) the teams and strong suit: "teams:[team1]|[team2],strong:[SUIT]"
+    6) status: "played_suit:[SUIT - empty if first],played_cards:[card_id1|card_id2|card_id3|card_id4 - empty if didn't play]"
+    7) play card: "play_card:[card]"
+    8) server response: "ok" or "bad_card" or "bad_play"
+    9) round end: "round_winner:[team],scores:[team]*[points]|[team]*[points]"
+    10) game over: "GAME_OVER"
+
+Formatting:
+    card format: "suit*rank"
+    team format: "[client_id]+[client_id]"
     SUITS:
-        SPADES
-        CLUBS
-        DIAMONDS
-        HEARTS
+        "SPADES"
+        "CLUBS"
+        "DIAMONDS"
+        "HEARTS"
     RANKS:
-        rank_1
-        rank_2
-        rank_3
-        rank_4
-        rank_5
-        rank_6
-        rank_7
-        rank_8
-        rank_9
-        rank_J
-        rank_Q
-        rank_K
-        rank_A
-TEAMS:
-    team format: [client_id1]+[client_id2]
-
-action: connect to server
-response: recv self player id
-FORMAT: "client_id:[id]"
-
-action: wait for all players to join
-response: sending who the ruler[msg1] is and the first 5 cards[msg2]
-FORMAT_msg1: "ruler:[client_id]"
-FORMAT_msg2: "card|card|card|card|card"
-
-action[if ruler]: send to server the strong suit[msg]
-response[if ruler]: server sends "ok" if fine or "bad" if not to ruler
-FORMAT_msg: "set_strong:[SUIT]"
-
-server sending remaining cards[msg1] to players and sending teams and strong suit[msg2] to all players
-FORMAT_msg1: "card|card|card|card|card|card|card|card|card|card|card|card|card"
-FORMAT_msg2: "teams:[team1]|[team2],strong:[SUIT]"
-
-TURNS
-
-action: wait for server to tell the player turn is up with the status of the round[msg1]
-response: play card[msg2] and wait for "ok" from server if card is fine, if there is an error with card formatting
-the server will send "bad_card" or if the card is illegal to play the server will send "bad_play"
-FORMAT_msg1: "played_suit:[SUIT - empty if first],played_cards:[card|card|card|card - may be 0,1,2,3 cards]"
-FORMAT_msg2: "play_card:[card]"
-
-action: wait for server to send the winner of the round and the points[msg]
-FORMAT_msg: round_winner:[team],scores:[team]*[points]|[team]*[points]
-
-action: repeat turns until a team reach 7 points
-response: server sends "GAME_OVER" and closes
-
-
-***********************
-if player disconnect the server will send to all players "PLAYER_DISCONNECTED" and shut down because the game can't continue
-
+        "rank_2"
+        "rank_3"
+        "rank_4"
+        "rank_5"
+        "rank_6"
+        "rank_7"
+        "rank_8"
+        "rank_9"
+        "rank_10"
+        "rank_J"
+        "rank_Q"
+        "rank_K"
+        "rank_A"

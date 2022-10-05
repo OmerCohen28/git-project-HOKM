@@ -34,7 +34,7 @@ class Handler(Server):
         self.players = []
         self.game = None
         self.current_player = None
-        self.played_cards = {1: "", 2: "", 3: "", 4: ""}
+        self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
     def _handle_data(self, client_id: int, msg: str, msg_type="data"):
         """
@@ -101,7 +101,9 @@ class Handler(Server):
 
         round_status = self.game.get_round_state()
 
-        msg = f"played_suit:{'' if round_status.played_suit is None else round_status.played_suit.name},played_cards:{list_to_str(round_status.played_cards)}"
+        played_cards_by_id = [self.played_cards_dict[1], self.played_cards_dict[2], self.played_cards_dict[3], self.played_cards_dict[4]]
+
+        msg = f"played_suit:{'' if round_status.played_suit is None else round_status.played_suit.name},played_cards:{list_to_str(played_cards_by_id)}"
         self.send_message(player.player_id, msg)
 
     def handle_play_card(self, client_id, str_card):
@@ -134,7 +136,7 @@ class Handler(Server):
 
         self.send_message(client_id, "ok")
 
-        self.played_cards[client_id] = str_card
+        self.played_cards_dict[client_id] = str_card
 
         if round_over_team:
             game_state = self.game.get_game_state()
@@ -143,7 +145,7 @@ class Handler(Server):
             self.send_all(f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
 
             self.update_server_gui()
-            self.played_cards = {1: "", 2: "", 3: "", 4: ""}
+            self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
             if self.game.game_over:
                 self.handle_game_over()
@@ -221,10 +223,10 @@ class Handler(Server):
         """
         score_str = f"{self.game.teams[0].points}|{self.game.teams[1].points}"
 
-        player1_id1_str = f"{list_to_str(self.game.players[0].hand, '+')}-{self.played_cards[1]}"
-        player2_id3_str = f"{list_to_str(self.game.players[2].hand, '+')}-{self.played_cards[3]}"
-        player3_id2_str = f"{list_to_str(self.game.players[1].hand, '+')}-{self.played_cards[2]}"
-        player4_id4_str = f"{list_to_str(self.game.players[3].hand, '+')}-{self.played_cards[4]}"
+        player1_id1_str = f"{list_to_str(self.game.players[0].hand, '+')}-{self.played_cards_dict[1]}"
+        player2_id3_str = f"{list_to_str(self.game.players[2].hand, '+')}-{self.played_cards_dict[3]}"
+        player3_id2_str = f"{list_to_str(self.game.players[1].hand, '+')}-{self.played_cards_dict[2]}"
+        player4_id4_str = f"{list_to_str(self.game.players[3].hand, '+')}-{self.played_cards_dict[4]}"
 
         players_str = f"{player1_id1_str}|{player2_id3_str}|{player3_id2_str}|{player4_id4_str}"
 
