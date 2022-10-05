@@ -39,6 +39,7 @@ class Game:
             self.winner_tup = (card, player)
         elif self.round_state.played_suit != card.suit:
             if self.round_state.played_suit in [c.suit for c in player.hand]:
+                print(self.round_state.played_suit)
                 print(card)
                 print(*player.hand,sep=" , ")
                 print("card doesn't match round suit while player has matching card")

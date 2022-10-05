@@ -8,7 +8,7 @@ import time
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
-DELAY_BETWEEN_TURNS_IN_SEC = 1.2 *2
+DELAY_BETWEEN_TURNS_IN_SEC = 1.2 * 2
 
 
 def list_to_str(lst, sep="|"):
@@ -83,10 +83,10 @@ class Handler(Server):
 
             # sends remaining cards for all players in format: suit*rank|suit*rank...
             for player in self.game.players:
-                self.send_message(player.player_id, list_to_str(player.hand))
+                self.send_message(player.player_id, f"{list_to_str(player.hand)},teams:{list_to_str(self.game.teams)},strong:{suit}")
 
             # format like this: "teams:1+3|2+4,strong:DIAMONDS"
-            self.send_all(f"teams:{list_to_str(self.game.teams)},strong:{suit}")
+            # self.send_all(f"teams:{list_to_str(self.game.teams)},strong:{suit}")
             time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
             self.start_turn()
 
@@ -113,8 +113,7 @@ class Handler(Server):
         :param str_card: str - card obj in string format
         :return: None
         """
-        print(str_card)
-        print(client_id)
+
         if self.current_player is None or client_id != self.current_player.player_id:
             return
 
@@ -123,17 +122,14 @@ class Handler(Server):
         if len(lst_card) != 2:
             self.send_message(client_id, BAD_CARD_MSG)
             return
-
+        print("_____________", client_id, "_________")
         suit, rank = lst_card
         if suit not in Suit.__members__ or rank not in Rank.__members__:
             self.send_message(client_id, BAD_CARD_MSG)
 
-        print(suit)
-        print(rank)
         card = Card(Suit[suit], Rank[rank])
-        print(card)
         valid, round_over_team = self.game.play_card(self.current_player, card)
-        print("got here 1")
+
         if not valid:
             self.send_message(client_id, BAD_PLAY_MSG)
             return
@@ -148,14 +144,15 @@ class Handler(Server):
 
             self.send_all(f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
 
-            self.update_server_gui()
+            #self.update_server_gui()
             self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
             if self.game.game_over:
                 self.handle_game_over()
                 return
         else:
-            self.update_server_gui()
+            #self.update_server_gui()
+            pass
 
         time.sleep(DELAY_BETWEEN_TURNS_IN_SEC*2)
 
