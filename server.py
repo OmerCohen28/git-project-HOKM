@@ -1,4 +1,5 @@
 import socket
+import time
 from select import select
 
 
@@ -86,7 +87,8 @@ class Server:
                 """
 
         for client_sock in self.__clients:
-            self.__messages_to_send.append((client_sock, msg))
+            if client_sock is not self.server_gui_sock:
+                self.__messages_to_send.append((client_sock, msg))
 
     def _handle_data(self, client_id, msg, msg_type="data"):
         """
@@ -133,14 +135,17 @@ class Server:
                     if not success:
                         self.__close_client(sock)
                         self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
-                        continue
-
-                    self._handle_data(self.__client_ids[sock], msg)
+                    else:
+                        self._handle_data(self.__client_ids[sock], msg)
                     if not self.run:
-                        self.close()
-                        return
+                        # self.close()
+                        # return
+                        break
 
             self.__send_messages(wlist)
+
+        time.sleep(2)  # for clients to recv last messages
+        self.close()
 
     def __send_messages(self, wlist):
         """

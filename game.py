@@ -39,6 +39,7 @@ class Game:
             self.winner_tup = (card, player)
         elif self.round_state.played_suit != card.suit:
             if self.round_state.played_suit in [c.suit for c in player.hand]:
+                print(self.round_state.played_suit)
                 print(card)
                 print(*player.hand,sep=" , ")
                 print("card doesn't match round suit while player has matching card")
@@ -47,6 +48,9 @@ class Game:
         self.round_state.played_cards.append(card)
         self.change_winner(card,player)
         self.current_turn = self.current_turn.next
+
+        player.hand.remove(card)
+
         if len(self.round_state.played_cards) == 4:
             winning_team = self.increment_points()
             self.round_state.played_cards = []

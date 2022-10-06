@@ -5,7 +5,7 @@ import random
 class client:
     def __init__(self) -> None:
         self.sock = socket(AF_INET,SOCK_STREAM)
-        self.sock.connect(("192.168.86.36", 55555))
+        self.sock.connect(("localhost", 55555))
         self.get_id_pattern = re.compile(r":([1-9])$")
         self.player_id = int(re.findall(string = self.recv_from_socket()[0], pattern= self.get_id_pattern)[0])
         self.hand = []
@@ -46,11 +46,17 @@ class client:
         data = self.recv_from_socket()[0]
         print(data)
         self.ruler = int(re.findall(string =data ,pattern=self.get_id_pattern)[0])
-        self.add_cards_to_hand()
+
+        cards_string = self.recv_from_socket()[0]
+        self.add_cards_to_hand(cards_string)
         if self.ruler == self.player_id:
             self.set_strong_suit()
-        self.add_cards_to_hand()
-        self.get_strong_suit_and_teams()
+
+        data = self.recv_from_socket()[0].split(",")
+        cards = data[0]
+        teams_and_strong = ",".join(data[1:])
+        self.add_cards_to_hand(cards)
+        self.get_strong_suit_and_teams(teams_and_strong)
         
         while True:
             self.play_turn()
@@ -58,9 +64,9 @@ class client:
                 break
 
 
-    def add_cards_to_hand(self):
+    def add_cards_to_hand(self, cards_string):
         self.hand = []
-        cards_string = self.recv_from_socket()[0]
+        # cards_string = self.recv_from_socket()[0]
         print("hello "+cards_string)
         cards = cards_string.split("|")    
         for card in cards:
@@ -73,8 +79,8 @@ class client:
         if self.recv_from_socket()[0] == "bad":
             self.set_strong_suit()
     
-    def get_strong_suit_and_teams(self):
-        data = self.recv_from_socket()[0]
+    def get_strong_suit_and_teams(self, data):
+        # data = self.recv_from_socket()[0]
         print(data)
         self.strong_suit = re.findall(string = data,pattern=r"strong:(.+?)$")[0]
     
@@ -131,6 +137,7 @@ class client:
                 self.send_msg(f"play_card:{cards_played[-1][0]}*{cards_played[-1][1]}")
             
             server_respone = self.recv_from_socket()[0]
+            print(server_respone)
             if server_respone == "ok":
                 for i in range(len(cards_played)-1):
                     self.hand.append(cards_played[i])
