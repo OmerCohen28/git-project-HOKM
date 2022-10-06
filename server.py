@@ -72,7 +72,7 @@ class Server:
 
     def send_to_server_gui(self, msg):
         """
-        adding the message that nee to be sent to the server gui to the message list
+        adding the message that need to be sent to the server gui to the message list
         :param msg: str
         :return:
         """
@@ -87,8 +87,6 @@ class Server:
                 """
 
         for client_sock in self.__clients:
-            if msg == "GAME_OVER":
-                print(f"clients {self.__client_ids[client_sock]}")
             if client_sock is not self.server_gui_sock:
                 if msg == "GAME_OVER":
                     print(f"game over(2) for {self.__client_ids[client_sock]}")
@@ -166,11 +164,7 @@ class Server:
         :return: None
         """
         # print("wlist is:", ",".join([f"{self.__client_ids[so]}" for so in wlist]))
-        if not self.run:
-            print([(self.__client_ids[msg[0]], msg[1]) for msg in self.__messages_to_send])
         for message in self.__messages_to_send:
-            if not self.run:
-                print((self.__client_ids[message[0]], message[1]))
             client, data = message
 
             # if data == "GAME_OVER":
