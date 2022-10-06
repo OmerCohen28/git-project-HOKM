@@ -87,7 +87,11 @@ class Server:
                 """
 
         for client_sock in self.__clients:
+            if msg == "GAME_OVER":
+                print(f"clients {self.__client_ids[client_sock]}")
             if client_sock is not self.server_gui_sock:
+                if msg == "GAME_OVER":
+                    print(f"game over(2) for {self.__client_ids[client_sock]}")
                 self.__messages_to_send.append((client_sock, msg))
 
     def _handle_data(self, client_id, msg, msg_type="data"):
@@ -107,6 +111,7 @@ class Server:
         print("server started")
         self.run = True
         # main server loop
+        wlist = []
         while self.run:
             rlist, wlist, _ = select(self.__clients + [self.__server_socket], self.__clients, [])
 
@@ -142,10 +147,16 @@ class Server:
                         # self.close()
                         # return
                         break
-
+            # print("a")
+            # while len(self.__messages_to_send) > 0:
+            #     print("b")
             self.__send_messages(wlist)
 
-        time.sleep(2)  # for clients to recv last messages
+        # for clients to recv last messages
+        while len(self.__messages_to_send) > 0:
+            self.__send_messages(wlist)
+        time.sleep(5)
+
         self.close()
 
     def __send_messages(self, wlist):
@@ -154,18 +165,27 @@ class Server:
         :param wlist: list[socket] - list of sockets that can be send to
         :return: None
         """
+        # print("wlist is:", ",".join([f"{self.__client_ids[so]}" for so in wlist]))
+        if not self.run:
+            print([(self.__client_ids[msg[0]], msg[1]) for msg in self.__messages_to_send])
         for message in self.__messages_to_send:
-
+            if not self.run:
+                print((self.__client_ids[message[0]], message[1]))
             client, data = message
+
+            # if data == "GAME_OVER":
+            #     print(f"game over msg for {self.__client_ids[client]}")
 
             if client not in self.__clients:
                 self.__messages_to_send.remove(message)
                 continue
             if client in wlist:
                 try:
+                    # print(f"sending data to client number {self.__client_ids[client]}")
                     client.send(str(len(data.encode())).zfill(8).encode() + data.encode())
                 except:
-                    pass
+                    print("error")
+                    # pass
 
                 self.__messages_to_send.remove(message)
 

@@ -54,7 +54,7 @@ class Client:
         if not work:
             print(f"error when recv cards_teams_strong {cards_teams_strong}")
             exit()
-
+        print(cards_teams_strong)
         cards, teams, strong = cards_teams_strong.split(",")
         self.cards = [(c.split("*")[0], c.split("*")[1]) for c in cards.split("|")]
         print(teams, strong)
