@@ -61,5 +61,10 @@ namespace WindowsFormsApp4.Instances
             this.controls = controls;
             for (int i = 0; i < cards.Length; i++) controls.Add(cards[i]);
         }
+
+        public void RemoveControls()
+        {
+            for (int i = 0; i < cards.Length; i++) this.controls.Remove(cards[i]);
+        }
     }
 }

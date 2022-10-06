@@ -20,15 +20,21 @@ namespace WindowsFormsApp4
         {
             InitializeComponent();
             AfterInitializeComponent();
+            new Thread(
+                () =>
+                {
+                    InitializeConnection();
+                }
+            ).Start();
         }
 
         private void InitializeConnection() {
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var item in ipHost.AddressList)
-            {
-                Console.WriteLine(item);
-            }
-            IPAddress ipAddr = ipHost.AddressList[6];
+            //foreach (var item in ipHost.AddressList)
+            //{
+            //    Console.WriteLine(item);
+            //}
+            IPAddress ipAddr = ipHost.AddressList[ipHost.AddressList.Length-1];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 55555);
             Console.WriteLine(localEndPoint);
 
@@ -56,10 +62,9 @@ namespace WindowsFormsApp4
                     length = int.Parse(res);
                     l = new byte[length];
                     int bMsg = s.Receive(l);
-                    if (bMsg == 0) { Console.WriteLine("CC"); continue; }
+                    if (bMsg == 0) { Console.WriteLine("CC"); break; }
                     string cards = Encoding.Default.GetString(l, 0, bMsg);
                     Console.WriteLine(cards);
-
                     AnalyzeCards(cards);
 
                 }
@@ -111,12 +116,6 @@ namespace WindowsFormsApp4
                 Console.WriteLine("String Parsing exception: {0}", e0.ToString());
             }
             
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Thread t = new Thread(new ThreadStart(InitializeConnection));
-            t.Start();
         }
 
         public static void button1_Click(object sender, EventArgs e)

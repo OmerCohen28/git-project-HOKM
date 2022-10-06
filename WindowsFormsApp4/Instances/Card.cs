@@ -36,7 +36,7 @@ namespace WindowsFormsApp4.Instances
         {
             switch (this.type)
             {
-                case "Clubs":
+                case "CLUBS":
                     switch (this.rank) {
                         case 1:
                             this.Image = Properties.Resources.row_1_column_1;
@@ -81,7 +81,7 @@ namespace WindowsFormsApp4.Instances
                             break;
                     }
                     break;
-                case "Spades":
+                case "SPADES":
                     switch (this.rank)
                     {
                         case 1:
@@ -127,7 +127,7 @@ namespace WindowsFormsApp4.Instances
                             break;
                     }
                     break;
-                case "Hearts":
+                case "HEARTS":
                     switch (this.rank)
                     {
                         case 1:
@@ -173,7 +173,7 @@ namespace WindowsFormsApp4.Instances
                             break;
                     }
                     break;
-                case "Diamonds":
+                case "DIAMONDS":
                     switch (this.rank)
                     {
                         case 1:
@@ -231,7 +231,6 @@ namespace WindowsFormsApp4.Instances
             if (card == "") return null;
             string[] atr = card.Split('*');
             atr[1] = atr[1][5].ToString().Replace("J", "11").Replace("Q", "12").Replace("K", "13").Replace("A", "1");
-            Console.WriteLine(atr[0] + " " + atr[1]);
             return new Card(int.Parse(atr[1]), atr[0]);
         }
 
