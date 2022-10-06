@@ -5,6 +5,7 @@ namespace WindowsFormsApp4
 {
     partial class Form1
     {
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -45,8 +46,10 @@ namespace WindowsFormsApp4
         #endregion
 
         private void UpdateCards(Hand[] hands, Card[] cards) {
+            Console.WriteLine("UPDATE");
             this.hands = hands;
             this.deck = cards;
+            UpdateView();
         }
 
         private void AfterInitializeComponent() {

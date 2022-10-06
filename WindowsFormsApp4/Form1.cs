@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using WindowsFormsApp4.Instances;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading;
 
 namespace WindowsFormsApp4
 {
@@ -23,8 +24,13 @@ namespace WindowsFormsApp4
 
         private void InitializeConnection() {
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddr = ipHost.AddressList[0];
+            foreach (var item in ipHost.AddressList)
+            {
+                Console.WriteLine(item);
+            }
+            IPAddress ipAddr = ipHost.AddressList[6];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 55555);
+            Console.WriteLine(localEndPoint);
 
             Socket s = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -46,10 +52,13 @@ namespace WindowsFormsApp4
                     // Data buffer
                     byte[] l = new byte[8];
                     int length = s.Receive(l);
-                    length = int.Parse(Encoding.ASCII.GetString(l, 0, length));
+                    string res = Encoding.Default.GetString(l, 0, length);
+                    length = int.Parse(res);
                     l = new byte[length];
                     int bMsg = s.Receive(l);
-                    string cards = Encoding.ASCII.GetString(l, 0, bMsg);
+                    if (bMsg == 0) { Console.WriteLine("CC"); continue; }
+                    string cards = Encoding.Default.GetString(l, 0, bMsg);
+                    Console.WriteLine(cards);
 
                     AnalyzeCards(cards);
 
@@ -72,7 +81,7 @@ namespace WindowsFormsApp4
 
             catch (Exception e0)
             {
-                Console.WriteLine("Unexpected exception : {0}", e0.ToString());
+                Console.WriteLine("()Unexpected exception : {0}", e0.ToString());
             }
         }
 
@@ -106,7 +115,8 @@ namespace WindowsFormsApp4
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            InitializeConnection();
+            Thread t = new Thread(new ThreadStart(InitializeConnection));
+            t.Start();
         }
 
         public static void button1_Click(object sender, EventArgs e)

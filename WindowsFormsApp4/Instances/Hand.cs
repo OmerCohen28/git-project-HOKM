@@ -12,7 +12,18 @@ namespace WindowsFormsApp4.Instances
         private Card[] cards;
         private Control.ControlCollection controls;
         public Hand(Card[] cards) {
-            this.cards = cards;
+            int count = 0;
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (cards[i] != null) count++;
+            }
+            Card[] newC = new Card[count];
+            int j = 0;
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (cards[i] != null) { newC[j] = cards[i]; j++; }
+            }
+            this.cards = newC;
         }
 
         public void SetUp(int x, int y, int space, char option, 

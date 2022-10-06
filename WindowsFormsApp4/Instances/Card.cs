@@ -230,8 +230,9 @@ namespace WindowsFormsApp4.Instances
         {
             if (card == "") return null;
             string[] atr = card.Split('*');
-            atr[0] = atr[0][5].ToString().Replace("J", "11").Replace("Q", "12").Replace("K", "13").Replace("A", "1");
-            return new Card(int.Parse(atr[0]), atr[1]);
+            atr[1] = atr[1][5].ToString().Replace("J", "11").Replace("Q", "12").Replace("K", "13").Replace("A", "1");
+            Console.WriteLine(atr[0] + " " + atr[1]);
+            return new Card(int.Parse(atr[1]), atr[0]);
         }
 
     }
