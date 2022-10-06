@@ -4,7 +4,7 @@ from linked_list import *
 
 class Game:
 
-    def __init__(self,players:list[Player],teams:list[Team]):
+    def __init__(self,players,teams):
         self.deck = Deck()
         self.players = players
         self.teams = teams

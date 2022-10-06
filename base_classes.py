@@ -70,7 +70,7 @@ class Player:
     def add_card(self,card:Card):
         self.hand.append(card)
     
-    def add_cards(self,cards:list[Card]):
+    def add_cards(self,cards):
         for card in cards:
             self.hand.append(card)
     
@@ -78,7 +78,7 @@ class Player:
         self.hand.remove(card)
 
 class Team:
-    def __init__(self,players:list[Player]):
+    def __init__(self,players):
         self.players = players
         self.points = 0
 
@@ -104,7 +104,7 @@ class RoundState:
         self.played_cards = []
     
 class GameState:
-    def __init__(self, s_suit:Suit, teams:list[Team]):
+    def __init__(self, s_suit:Suit, teams):
         self.s_suit = s_suit
         self.teams = teams
         self.scores = {team: 0 for team in teams}

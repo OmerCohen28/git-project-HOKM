@@ -106,6 +106,10 @@ class Handler(Server):
         msg = f"played_suit:{'' if round_status.played_suit is None else round_status.played_suit.name},played_cards:{list_to_str(played_cards_by_id)}"
         self.send_message(player.player_id, msg)
 
+        self.update_server_gui()
+
+        time.sleep(1)
+
     def handle_play_card(self, client_id, str_card):
         """
         handles the player playing a card with game logic and error checking and calling the update server gui
@@ -231,7 +235,7 @@ class Handler(Server):
 
         players_str = f"{player1_id1_str}|{player2_id3_str}|{player3_id2_str}|{player4_id4_str}"
 
-        self.send_to_server_gui(f"{players_str},{score_str}")
+        self.send_to_server_gui(f"{players_str}")
 
 
 a = Handler()

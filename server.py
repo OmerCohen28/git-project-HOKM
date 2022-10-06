@@ -121,12 +121,13 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    if len(self.__clients) > 1 or True:
-                        self.__client_ids[new_client] = len(self.__clients)
+                    if len(self.__clients) > 1 or self.server_gui_sock:
+                        self.__client_ids[new_client] = len(self.__clients) - 1
 
-                        self._handle_data(len(self.__clients), "", msg_type="new_client")
+                        self._handle_data(len(self.__clients) - 1, "", msg_type="new_client")
                     else:
                         self.server_gui_sock = new_client
+                        print('CONNECTED TO GUI SERVER', self.__clients, self.__client_ids)
 
                 # handling client request
                 else:
