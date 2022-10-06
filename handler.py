@@ -8,7 +8,7 @@ import time
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
-DELAY_BETWEEN_TURNS_IN_SEC = 0.5
+DELAY_BETWEEN_TURNS_IN_SEC = 0.2
 
 
 def list_to_str(lst, sep="|"):

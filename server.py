@@ -1,4 +1,5 @@
 import socket
+import time
 from select import select
 
 
@@ -137,10 +138,14 @@ class Server:
 
                     self._handle_data(self.__client_ids[sock], msg)
                     if not self.run:
-                        self.close()
-                        return
+                        # self.close()
+                        # return
+                        break
 
             self.__send_messages(wlist)
+
+        time.sleep(2)  # for clients to recv last messages
+        self.close()
 
     def __send_messages(self, wlist):
         """
