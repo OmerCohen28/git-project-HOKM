@@ -21,10 +21,8 @@ Formatting of game flow:
     4) two stages:
         1) strong suit: "set_strong:[SUIT]"
         2) server response: "ok" or "bad"
-    5) sends in 2 messages (in order):
-        1) the 13 cards: "card|card|card|card|card|card|card|card|card|card|card|card|card"
-        2) the teams and strong suit: "teams:[team1]|[team2],strong:[SUIT]"
-    6) status: "played_suit:[SUIT - empty if first],played_cards:[card_id1|card_id2|card_id3|card_id4 - empty if didn't play]"
+    5) 13 cards, teams and strong: "card|card|card|card|card|card|card|card|card|card|card|card|card,teams:[team1]|[team2],strong:[SUIT]"
+    6) status: "played_suit:[SUIT - empty string if first],played_cards:[card_id1|card_id2|card_id3|card_id4 - empty if didn't play]"
     7) play card: "play_card:[card]"
     8) server response: "ok" or "bad_card" or "bad_play"
     9) round end: "round_winner:[team],scores:[team]*[points]|[team]*[points]"
