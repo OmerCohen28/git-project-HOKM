@@ -8,7 +8,7 @@ import time
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
-DELAY_BETWEEN_TURNS_IN_SEC = 0.2
+DELAY_BETWEEN_TURNS_IN_SEC = 0.5
 
 
 def list_to_str(lst, sep="|"):
@@ -144,14 +144,14 @@ class Handler(Server):
 
             self.send_all(f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
 
-            # self.update_server_gui()
+            self.update_server_gui()
             self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
             if self.game.game_over:
                 self.handle_game_over()
                 return
         else:
-            # self.update_server_gui()
+            self.update_server_gui()
             pass
 
         time.sleep(DELAY_BETWEEN_TURNS_IN_SEC*2)

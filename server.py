@@ -121,11 +121,13 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    if len(self.__clients) > 1 or True:
-                        self.__client_ids[new_client] = len(self.__clients)
+                    if len(self.__clients) > 1:
+                        print(f"client {len(self.__clients) - 1}")
+                        self.__client_ids[new_client] = len(self.__clients) - 1
 
                         self._handle_data(len(self.__clients), "", msg_type="new_client")
                     else:
+                        print("server gui")
                         self.server_gui_sock = new_client
 
                 # handling client request
