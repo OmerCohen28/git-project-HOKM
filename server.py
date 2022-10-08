@@ -1,6 +1,9 @@
+from pickle import TRUE
 import socket
 import time
 from select import select
+
+SERVER_GUI = True
 
 
 class Server:
@@ -27,7 +30,8 @@ class Server:
         setting up the server socket object
         :return: None
         """
-        self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__server_socket = socket.socket(
+            socket.AF_INET, socket.SOCK_STREAM)
         self.__server_socket.bind((self.__ip, self.__port))
 
     def start(self):
@@ -65,7 +69,8 @@ class Server:
         :return: None
         """
 
-        client_sock = [sock for sock, _id in self.__client_ids.items() if _id == client_id]
+        client_sock = [sock for sock,
+                       _id in self.__client_ids.items() if _id == client_id]
         client_sock = client_sock[0]
 
         self.__messages_to_send.append((client_sock, msg))
@@ -111,7 +116,8 @@ class Server:
         # main server loop
         wlist = []
         while self.run:
-            rlist, wlist, _ = select(self.__clients + [self.__server_socket], self.__clients, [])
+            rlist, wlist, _ = select(
+                self.__clients + [self.__server_socket], self.__clients, [])
 
             # handling readable sockets
             for sock in rlist:
@@ -124,13 +130,20 @@ class Server:
                         return
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
-                    if len(self.__clients) > 1 or self.server_gui_sock:
-                        self.__client_ids[new_client] = len(self.__clients) - 1
 
-                        self._handle_data(len(self.__clients) - 1, "", msg_type="new_client")
+                    if SERVER_GUI:
+                        if len(self.__clients) > 1 or self.server_gui_sock:
+                            self.__client_ids[new_client] = len(self.__clients) - 1
+
+                            self._handle_data(len(self.__clients) - 1, "", msg_type="new_client")
+                        else:
+                            self.server_gui_sock = new_client
+                            print('CONNECTED TO GUI SERVER',
+                                self.__clients, self.__client_ids)
                     else:
-                        self.server_gui_sock = new_client
-                        print('CONNECTED TO GUI SERVER', self.__clients, self.__client_ids)
+                        self.__client_ids[new_client] = len(self.__clients)
+
+                        self._handle_data(len(self.__clients), "", msg_type="new_client")
 
                 # handling client request
                 else:
@@ -138,7 +151,8 @@ class Server:
 
                     if not success:
                         self.__close_client(sock)
-                        self._handle_data(self.__client_ids[sock], "", msg_type="client_disconnected")
+                        self._handle_data(
+                            self.__client_ids[sock], "", msg_type="client_disconnected")
                     else:
                         self._handle_data(self.__client_ids[sock], msg)
                     if not self.run:
@@ -176,7 +190,8 @@ class Server:
             if client in wlist:
                 try:
                     # print(f"sending data to client number {self.__client_ids[client]}")
-                    client.send(str(len(data.encode())).zfill(8).encode() + data.encode())
+                    client.send(str(len(data.encode())).zfill(
+                        8).encode() + data.encode())
                 except:
                     print("error")
                     # pass
@@ -201,7 +216,8 @@ class Server:
             return "msg length error", False
 
         msg = b''
-        while len(msg) < msg_size:  # this is a fail - safe -> if the recv not giving the msg in one time
+        # this is a fail - safe -> if the recv not giving the msg in one time
+        while len(msg) < msg_size:
             try:
                 msg_fragment = sock.recv(msg_size - len(msg))
             except:
@@ -217,5 +233,5 @@ class Server:
 
 # for testing purposes
 if __name__ == "__main__":
-     s = Server("0.0.0.0", 55555)
-     s.start()
+    s = Server("0.0.0.0", 55555)
+    s.start()

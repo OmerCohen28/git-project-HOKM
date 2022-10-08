@@ -8,7 +8,7 @@ import time
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
-DELAY_BETWEEN_TURNS_IN_SEC = 0.3
+DELAY_BETWEEN_TURNS_IN_SEC = 0.6
 
 
 def list_to_str(lst, sep="|"):
@@ -83,7 +83,8 @@ class Handler(Server):
 
             # sends remaining cards for all players in format: suit*rank|suit*rank...
             for player in self.game.players:
-                self.send_message(player.player_id, f"{list_to_str(player.hand)},teams:{list_to_str(self.game.teams)},strong:{suit}")
+                self.send_message(
+                    player.player_id, f"{list_to_str(player.hand)},teams:{list_to_str(self.game.teams)},strong:{suit}")
 
             # format like this: "teams:1+3|2+4,strong:DIAMONDS"
             # self.send_all(f"teams:{list_to_str(self.game.teams)},strong:{suit}")
@@ -101,14 +102,15 @@ class Handler(Server):
 
         round_status = self.game.get_round_state()
 
-        played_cards_by_id = [self.played_cards_dict[1], self.played_cards_dict[2], self.played_cards_dict[3], self.played_cards_dict[4]]
+        played_cards_by_id = [self.played_cards_dict[1], self.played_cards_dict[2],
+                              self.played_cards_dict[3], self.played_cards_dict[4]]
 
         msg = f"played_suit:{'' if round_status.played_suit is None else round_status.played_suit.name},played_cards:{list_to_str(played_cards_by_id)}"
         self.send_message(player.player_id, msg)
 
-        #self.update_server_gui()
+        # self.update_server_gui()
 
-        #time.sleep(1)
+        # time.sleep(1)
 
     def handle_play_card(self, client_id, str_card):
         """
@@ -142,23 +144,23 @@ class Handler(Server):
 
         self.played_cards_dict[client_id] = str_card
 
+        self.update_server_gui()
+
         if round_over_team:
             game_state = self.game.get_game_state()
             scores = game_state.scores
 
-            self.send_all(f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
+            self.send_all(
+                f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
 
-            self.update_server_gui()
             self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
             if self.game.game_over:
+                print("winning team:", round_over_team)
                 self.handle_game_over()
                 return
-        else:
-            self.update_server_gui()
-            pass
 
-        time.sleep(DELAY_BETWEEN_TURNS_IN_SEC*2)
+        time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
 
         # start new turn
         self.start_turn()
