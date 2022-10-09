@@ -1,9 +1,8 @@
-from pickle import TRUE
 import socket
 import time
 from select import select
 
-SERVER_GUI = True
+SERVER_GUI = False
 
 
 class Server:

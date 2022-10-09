@@ -1,3 +1,23 @@
+Socket info:
+    the server is working on port 55555 and any ip that the computer has (localhost included)
+
+    Send format:
+        when sending a message to the server you need to send the length of the message in the first 8 bytes
+        example:
+            the message "hello world", and the length of the message is 11.
+            format: "00000011hello world"
+            the length is 11 and it was padded to fit 8 bytes and after that is the message
+    
+    Recv format:
+        when receiving a message you do the opposite, recv the first 8 bytes and then recv the message by the length you got.
+        example:
+            length = socket.recv(8)  # length will be b"00000011"
+            length = int(length)  # length will be 11
+
+            msg = socket.recv(length)  # msg will be b"hello world"
+            msg = msg.decode()  # msg will be "hello world"
+
+
 general game flow:
     1) connect to server and receive client id
     2) wait for all players to join
@@ -8,7 +28,7 @@ general game flow:
     6) server sends the status of the round to the player that their turn is happening
     7) The player whose turn occurs sends to the server the card he wants to play
     8) server response to the player "ok" if card is fine or "bad_card" if the card is not well formatted or "bad_play" if the card is against the rules
-    9) once the round ends the server sends to all players which team won the round and the score of each team
+    9) once the round ends the server sends to all players which team won the round and the score of each team and the cards that were played in the round
     10) repeat from (6). if a team reached 7 points the server will send "GAME_OVER" and shut down
 
     ** if a player disconnect the server will send "PLAYER_DISCONNECTED" and shut down because the game can't continue
@@ -25,7 +45,7 @@ Formatting of game flow:
     6) status: "played_suit:[SUIT - empty string if first],played_cards:[card_id1|card_id2|card_id3|card_id4 - empty if didn't play]"
     7) play card: "play_card:[card]"
     8) server response: "ok" or "bad_card" or "bad_play"
-    9) round end: "round_winner:[team],scores:[team]*[points]|[team]*[points]"
+    9) round end: "round_winner:[team],scores:[team]*[points]|[team]*[points],round_cards:[card_id1|card_id2|card_id3|card_id4]"
     10) game over: "GAME_OVER"
 
 Formatting:

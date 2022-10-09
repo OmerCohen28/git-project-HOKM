@@ -150,8 +150,11 @@ class Handler(Server):
             game_state = self.game.get_game_state()
             scores = game_state.scores
 
+            played_cards_by_id = [self.played_cards_dict[1], self.played_cards_dict[2],
+                              self.played_cards_dict[3], self.played_cards_dict[4]]
+
             self.send_all(
-                f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])}")
+                f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])},round_cards:{list_to_str(played_cards_by_id)}")
 
             self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
