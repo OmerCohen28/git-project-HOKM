@@ -4,7 +4,7 @@ from game import Game
 import random
 import time
 
-
+print("testing branch")
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
