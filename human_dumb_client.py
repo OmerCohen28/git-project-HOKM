@@ -55,7 +55,28 @@ class Client:
             print(f"error when recv cards_teams_strong {cards_teams_strong}")
             exit()
         print(cards_teams_strong)
+
+        data = cards_teams_strong.split(",")
+
+        # if the data in corrupted then request new turn and data
+        if len(data) != 3:
+            # dummy recv to remove buffer
+            _, work = self.recv()
+
+            # request new info
+            self.send(f"request_start_info")
+
+            cards_teams_strong, work = self.recv()
+            if not work:
+                print(f"error when recv cards_teams_strong number 2 {cards_teams_strong}")
+                exit()
+
+            # request new turn
+            self.send(f"request_turn")
+            print("requested new turn")
+
         cards, teams, strong = cards_teams_strong.split(",")
+
         self.cards = [(c.split("*")[0], c.split("*")[1]) for c in cards.split("|")]
         print(teams, strong)
 
@@ -75,6 +96,9 @@ class Client:
                 exit()
             elif status == "PLAYER_DISCONNECTED":
                 print("player disconnected")
+                exit()
+            elif status == "SERVER_DISCONNECTED":
+                print("SERVER_DISCONNECTED")
                 exit()
             print(status)
 
@@ -96,7 +120,10 @@ class Client:
                 exit()
             print("response:", response)
 
-            if response == "ok":
+            if response == "SERVER_DISCONNECTED":
+                print("SERVER_DISCONNECTED")
+                exit()
+            elif response == "ok":
                 self.cards.remove(card)
             else:
                 print("ERROR!!!!!!!!!!")
@@ -108,6 +135,9 @@ class Client:
 
             if game_status == "PLAYER_DISCONNECTED":
                 print("player disconnected")
+                exit()
+            elif game_status == "SERVER_DISCONNECTED":
+                print("SERVER_DISCONNECTED")
                 exit()
             print(game_status)
 

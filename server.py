@@ -170,6 +170,16 @@ class Server:
 
         self.close()
 
+    def emergency_send_to_all_clients(self):
+        data = "SERVER_DISCONNECTED"
+
+        for client in self.__clients:
+            try:
+                client.send(str(len(data.encode())).zfill(8).encode() + data.encode())
+            except:
+                pass
+        time.sleep(1)
+
     def __send_messages(self, wlist):
         """
         this function sends the clients messages that are waiting to be sent by the wanted format

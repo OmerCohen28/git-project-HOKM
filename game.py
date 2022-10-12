@@ -118,9 +118,9 @@ class Game:
             teammate = own_team.players[1]
         else:
             teammate = own_team.players[0]
-        player2 = Node(opposite_team.players[0])
+        player2 = Node(opposite_team.players[0] if player.player_id == 1 or player.player_id == 4 else opposite_team.players[1])
         player3 = Node(teammate)
-        player4 = Node(opposite_team.players[1])
+        player4 = Node(opposite_team.players[1] if player.player_id == 1 or player.player_id == 4 else opposite_team.players[0])
         self.turns.head.next = player2
         player2.next = player3
         player3.next = player4
