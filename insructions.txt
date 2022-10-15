@@ -47,6 +47,7 @@ Notes:
         1) close client socket
         2) block code with readline or with input until the server is open
         3) reconnect to the server and recv id by unblocking the code - reconnect in the same order as the start of the game
+        
         * if the server crash when receiving round status or card response then replay the turn - when until round status and play normally
           if the server crash when receiving scores and round winner then wait for new round winner
 
