@@ -14,7 +14,7 @@ BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
 DELAY_BETWEEN_TURNS_IN_SEC = 0.6
-GENERATE_ERROR_IN_TURN = 8
+GENERATE_ERROR_IN_TURN = -1
 
 
 def list_to_str(lst, sep="|"):
