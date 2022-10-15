@@ -14,6 +14,7 @@ BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
 DELAY_BETWEEN_TURNS_IN_SEC = 0.6
+GENERATE_ERROR_IN_TURN = 8
 
 
 def list_to_str(lst, sep="|"):
@@ -42,8 +43,7 @@ class Handler(Server):
         self.current_player = None
         self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
-        #temp!
-        self.turns_till_error = 0
+        self.turns = 0
 
     def _handle_data(self, client_id: int, msg: str, msg_type="data"):
         """
@@ -165,7 +165,7 @@ class Handler(Server):
             return
 
         #temp!!
-        self.turns_till_error += 1
+        self.turns += 1
 
         lst_card = str_card.split("*")
 
@@ -180,7 +180,7 @@ class Handler(Server):
         self.backup_game = copy.deepcopy(self.game)
 
         #temp!!
-        if self.turns_till_error == 8:
+        if self.turns == GENERATE_ERROR_IN_TURN:
             int("asda")
 
         card = Card(Suit[suit], Rank[rank])
@@ -241,11 +241,13 @@ class Handler(Server):
         :return: None
         """
 
-        if os.path.isfile('filename.txt') and os.stat("t.data").st_size > 0:
+        if os.path.isfile('game_data.bak') and os.stat("game_data.bak").st_size > 0:
             with open("game_data.bak", "rb") as f:
                 pickle_game = pickle.load(f)
             
             self.game = pickle_game
+
+            print("starting game after crash")
 
             self.start_turn()
         else:
