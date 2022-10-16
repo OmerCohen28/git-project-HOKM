@@ -46,7 +46,8 @@ Notes:
     3) if the server crashes the server will send "SERVER_DISCONNECTED" and will shut down and follow this instructions:
         1) close client socket
         2) block code with readline or with input until the server is open
-        3) reconnect to the server and recv id by unblocking the code - reconnect in the same order as the start of the game
+        3) reconnect to the server, recv id and send username by unblocking the code - reconnect in the same order as the start of the game
+        
         * if the server crash when receiving round status or card response then replay the turn - when until round status and play normally
           if the server crash when receiving scores and round winner then wait for new round winner
 
@@ -54,7 +55,7 @@ Notes:
 
 Formatting of game flow:
     1) client id in format: "client_id:[id in number from 1-4]"
-    2) username format msg: "username:[game-username-by-admin]" //implemented but wont be active until tourney
+    2) username format msg: "username:[game-username-by-admin]" //write the code but keep it commented - wont be active until tournament day
     4) sends in 2 messages (in order):
         1)the ruler: "ruler:[client_id]"
         2)the first 5 cards: "card|card|card|card|card"
