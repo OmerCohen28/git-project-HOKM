@@ -29,7 +29,7 @@ class Client:
         print("my id:", self.id)
 
         if USERNAME:
-            self.send(f"set_username:{USERNAME}")
+            self.send(f"username:{USERNAME}")
     
 
     def start_game(self):
