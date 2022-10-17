@@ -40,6 +40,7 @@ class Handler(Server):
         self.players = []
         self.game = None
         self.backup_game = None
+        self.played_cards_dict_backup = None
         self.current_player = None
         self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
@@ -121,6 +122,7 @@ class Handler(Server):
             self.game.hand_cards_for_all()
 
             self.backup_game = copy.deepcopy(self.game)
+            self.played_cards_dict_backup = copy.deepcopy(self.played_cards_dict)
 
             # sends remaining cards for all players in format: suit*rank|suit*rank...
             for player in self.game.players:
@@ -178,6 +180,8 @@ class Handler(Server):
             self.send_message(client_id, BAD_CARD_MSG)
 
         self.backup_game = copy.deepcopy(self.game)
+        self.played_cards_dict_backup = copy.deepcopy(self.played_cards_dict)
+
 
         #temp!!
         if self.turns == GENERATE_ERROR_IN_TURN:
@@ -187,6 +191,7 @@ class Handler(Server):
         valid, round_over_team = self.game.play_card(self.current_player, card)
 
         self.backup_game = copy.deepcopy(self.game)
+        self.played_cards_dict_backup = copy.deepcopy(self.played_cards_dict)
 
         if not valid:
             self.send_message(client_id, BAD_PLAY_MSG)
@@ -243,9 +248,13 @@ class Handler(Server):
 
         if os.path.isfile('game_data.bak') and os.stat("game_data.bak").st_size > 0:
             with open("game_data.bak", "rb") as f:
-                pickle_game = pickle.load(f)
-            
-            self.game = pickle_game
+                #pickle_game = pickle.load(f)
+                data = f.read()
+                pickle_game , pickle_dict = data.split(b"ThisIsASeperator")
+
+
+            self.game = pickle.loads(pickle_game)
+            self.played_cards_dict = pickle.loads(pickle_dict)
 
             print("starting game after crash")
 
@@ -311,8 +320,11 @@ class Handler(Server):
         print(f"\n**ERROR**\ntype: {t.__name__}\nvalue: {value}\nline: {tb.tb_frame.f_lineno}")
 
         with open("game_data.bak", "wb") as f:
-            pickle.dump(self.backup_game, f)
-        
+            #pickle.dump(self.backup_game, f)
+            pickle_data = pickle.dumps(self.backup_game)
+            pickle_data_dict = pickle.dumps(self.played_cards_dict_backup)
+            f.write(pickle_data + b"ThisIsASeperator" + pickle_data_dict)
+
         self.emergency_send_to_all_clients()
 
         self.close()
