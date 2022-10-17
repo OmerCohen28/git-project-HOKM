@@ -86,7 +86,8 @@ namespace WindowsFormsApp4
 
             catch (Exception e0)
             {
-                Console.WriteLine("()Unexpected exception : {0}", e0.ToString());
+                DisplayWinner();
+                Console.WriteLine("Unexpected exception : {0}", e0.ToString());
             }
         }
 
@@ -94,7 +95,8 @@ namespace WindowsFormsApp4
         {
             try
             {
-                string[] playerCards = cards.Split('|');
+                string[] data = cards.Split('%');
+                string[] playerCards = data[0].Split('|');
                 Hand[] playerHands = new Hand[4];
                 Card[] playerPlaced = new Card[4];
                 for (int i = 0; i < playerCards.Length; i++)
@@ -110,7 +112,7 @@ namespace WindowsFormsApp4
                     playerHands[i] = new Hand(handCards);
                 }
 
-                this.UpdateCards(playerHands, playerPlaced);
+                this.UpdateCards(playerHands, playerPlaced, data[1].Split('|'));
             }
             catch (Exception e0) {
                 Console.WriteLine("String Parsing exception: {0}", e0.ToString());
@@ -123,6 +125,11 @@ namespace WindowsFormsApp4
             Random rand = new Random();
             Card card = ((Card)sender);
             card.Rank = rand.Next(1, 13);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

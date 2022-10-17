@@ -34,16 +34,26 @@ namespace WindowsFormsApp4.Instances
             if (option == 'x')
             {
                 int totalWidth = width * cards.Length + space * (cards.Length - 1);
+                if (totalWidth > Form1.instance.ClientSize.Width)
+                {
+                    space = space + (Form1.instance.ClientSize.Width - totalWidth) / (cards.Length - 1);
+                }
+                totalWidth = Math.Min(totalWidth, Form1.instance.ClientSize.Width);
                 for (int i = 0; i < cards.Length; i++)
                 {
-                    cards[i].Location = new System.Drawing.Point(x - (totalWidth / 2) + i * (width + space), y - height/2);
+                    cards[i].Location = new System.Drawing.Point(x -(totalWidth / 2) + i * (width + space), y - height/2);
                 }
             } else if (option == 'y')
             {
                 int totalHeight = height * cards.Length + space * (cards.Length - 1);
+                if (totalHeight > Form1.instance.ClientSize.Height)
+                {
+                    space = space + (Form1.instance.ClientSize.Height - totalHeight) / (cards.Length - 1);
+                }
+                totalHeight = Math.Min(totalHeight, Form1.instance.ClientSize.Height);
                 for (int i = 0; i < cards.Length; i++)
                 {
-                    cards[i].Location = new System.Drawing.Point(x - width/2, y - (totalHeight / 2) + i * (height + space));
+                    cards[i].Location = new System.Drawing.Point(x - width/2, y -(totalHeight / 2) + i * (height + space));
                 }
             }
             for (int i = 0; i < cards.Length; i++) cards[i].Anchor = anchor;
