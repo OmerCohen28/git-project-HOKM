@@ -314,7 +314,7 @@ class Handler(Server):
 
         players_str = f"{player1_id1_str}|{player2_id3_str}|{player3_id2_str}|{player4_id4_str}"
 
-        self.send_to_server_gui(f"{players_str}")
+        self.send_to_server_gui(f"{players_str}%score_str")
     
     def handle_error(self, t, value, tb):
         print(f"\n**ERROR**\ntype: {t.__name__}\nvalue: {value}\nline: {tb.tb_frame.f_lineno}")
