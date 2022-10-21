@@ -97,7 +97,8 @@ class Handler(Server):
         """
         player = self.players[client_id - 1]
 
-        self.send_message(player.player_id, f"{list_to_str(player.hand)},teams:{list_to_str(self.game.teams)},strong:{self.game.strong_suit.name}")
+        self.send_message(
+            player.player_id, f"{list_to_str(player.hand)},teams:{list_to_str(self.game.teams)},strong:{self.game.strong_suit.name}")
 
     def handle_set_strong_suit(self, client_id, suit):
         """
@@ -122,7 +123,8 @@ class Handler(Server):
             self.game.hand_cards_for_all()
 
             self.backup_game = copy.deepcopy(self.game)
-            self.played_cards_dict_backup = copy.deepcopy(self.played_cards_dict)
+            self.played_cards_dict_backup = copy.deepcopy(
+                self.played_cards_dict)
 
             # sends remaining cards for all players in format: suit*rank|suit*rank...
             for player in self.game.players:
@@ -166,7 +168,7 @@ class Handler(Server):
         if self.current_player is None or client_id != self.current_player.player_id:
             return
 
-        #temp!!
+        # temp!!
         self.turns += 1
 
         lst_card = str_card.split("*")
@@ -182,8 +184,7 @@ class Handler(Server):
         self.backup_game = copy.deepcopy(self.game)
         self.played_cards_dict_backup = copy.deepcopy(self.played_cards_dict)
 
-
-        #temp!!
+        # temp!!
         if self.turns == GENERATE_ERROR_IN_TURN:
             int("asda")
 
@@ -208,7 +209,7 @@ class Handler(Server):
             scores = game_state.scores
 
             played_cards_by_id = [self.played_cards_dict[1], self.played_cards_dict[2],
-                              self.played_cards_dict[3], self.played_cards_dict[4]]
+                                  self.played_cards_dict[3], self.played_cards_dict[4]]
 
             self.send_all(
                 f"round_winner:{round_over_team},scores:{list_to_str([f'{team}*{score}' for team, score in scores.items()])},round_cards:{list_to_str(played_cards_by_id)}")
@@ -250,8 +251,7 @@ class Handler(Server):
             with open("game_data.bak", "rb") as f:
                 #pickle_game = pickle.load(f)
                 data = f.read()
-                pickle_game , pickle_dict = data.split(b"ThisIsASeperator")
-
+                pickle_game, pickle_dict = data.split(b"ThisIsASeperator")
 
             self.game = pickle.loads(pickle_game)
             self.played_cards_dict = pickle.loads(pickle_dict)
@@ -314,10 +314,11 @@ class Handler(Server):
 
         players_str = f"{player1_id1_str}|{player2_id3_str}|{player3_id2_str}|{player4_id4_str}"
 
-        self.send_to_server_gui(f"{players_str}%score_str")
-    
+        self.send_to_server_gui(f"{players_str}%{score_str}")
+
     def handle_error(self, t, value, tb):
-        print(f"\n**ERROR**\ntype: {t.__name__}\nvalue: {value}\nline: {tb.tb_frame.f_lineno}")
+        print(
+            f"\n**ERROR**\ntype: {t.__name__}\nvalue: {value}\nline: {tb.tb_frame.f_lineno}")
 
         with open("game_data.bak", "wb") as f:
             #pickle.dump(self.backup_game, f)
