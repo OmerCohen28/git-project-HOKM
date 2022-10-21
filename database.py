@@ -3,12 +3,20 @@ import sqlite3 as lite
 
 class Database:
 
-    def __init__(self):
+    def __init__(self, db_path="test.db"):
         """
         setting up the interface that communicates with the database
         """
-        self.dbPath = 'controller/test.db'
-        self.con = lite.connect(self.dbPath)
+        self.__con = lite.connect(db_path)
+
+    def close(self):
+        """
+        closing the connection to the database
+        :return: None
+        """
+
+        self.__con.close()
+        
 
     def query(self, sql):
         """
@@ -21,9 +29,9 @@ class Database:
 
         try:
 
-            cur = self.con.cursor()
+            cur = self.__con.cursor()
             cur.execute(sql)
-            self.con.commit()
+            self.__con.commit()
             rows = cur.fetchall()
 
         except lite.Error as e:
@@ -56,5 +64,20 @@ class Database:
         rows = self.query(query)
 
         return len(rows) != 0
+    
+    def create_scores_table(self):
+        self.create_table_if_not_exists("scores", (
+            "username TEXT", "score INTEGER"))
+
+    def add_user_if_not_exists(self, username):
+        """
+        checking if user exists in the database and adding it if not
+        :param name: str - table name
+        :param params - data to check if exists
+        :return: None
+        """
+
+        if not self.check_if_exists("scores", (("username", f"{username}"), )):
+            self.query(f"INSERT INTO scores VALUES('{username}', 0)")
 
     
