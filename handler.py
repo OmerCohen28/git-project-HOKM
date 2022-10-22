@@ -309,6 +309,9 @@ class Handler(Server):
 
         self.handle_winning_team(str(winning_team))
 
+        with open("game_data.bak", "wb") as f:
+            f.write(b'')
+
         self.send_all(f"PLAYER_DISCONNECTED:{client_id}")
         print(f"player number {client_id} has disconnected")
         self.run = False
