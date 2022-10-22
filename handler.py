@@ -283,7 +283,7 @@ class Handler(Server):
         :return: None
         """
 
-        self.send_all(f"PLAYER_DISCONNECTED")
+        self.send_all(f"PLAYER_DISCONNECTED:{client_id}")
         self.run = False
 
     def handle_game_over(self):
