@@ -66,6 +66,10 @@ class Database:
         return len(rows) != 0
     
     def create_scores_table(self):
+        """
+        create the table that holds the scores of the players
+        :return: None
+        """
         self.create_table_if_not_exists("scores", (
             "username TEXT", "score INTEGER"))
 
@@ -77,7 +81,29 @@ class Database:
         :return: None
         """
 
-        if not self.check_if_exists("scores", (("username", f"{username}"), )):
+        if not self.check_if_exists("scores", (("username", f"'{username}'"), )):
             self.query(f"INSERT INTO scores VALUES('{username}', 0)")
+
+    def increment_score(self, usernames):
+        """
+        checking if user exists in the database and adding it if not
+        :param name: str - table name
+        :param params - data to check if exists
+        :return: None
+        """
+        search_params = " OR ".join((f"username='{username}'" for username in usernames))
+        query = f"UPDATE scores SET score=score+1 WHERE {search_params}"
+        self.query(query)
+
+    def get_scores(self):
+        """
+        getting the scores from the database and returning a list of them
+        :return: list - list[tuple[username, score]]
+        """
+
+        query = f"SELECT * FROM scores"
+        rows = self.query(query)
+
+        return rows
 
     

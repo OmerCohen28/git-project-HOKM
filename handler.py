@@ -1,6 +1,7 @@
 from base_classes import *
 from server import Server
 from game import Game
+from database import Database
 import random
 import time
 import pickle
@@ -37,7 +38,11 @@ class Handler(Server):
 
         super().__init__(ip, port)
 
+        self.database = Database()
+        self.database.create_scores_table()
+
         self.players = []
+        self.player_usernames = {1: "", 2: "", 3: "", 4: ""}
         self.game = None
         self.backup_game = None
         self.played_cards_dict_backup = None
@@ -74,8 +79,24 @@ class Handler(Server):
             elif msg == "request_turn":
 
                 self.request_start_turn(client_id)
+            elif msg.startswith("username:"):
+
+                username = msg[len("username:"):]
+                self.handle_set_username(client_id, username)
+
+    def handle_set_username(self, client_id, username):
+        """
+        add player's username to database if needed to count total points
+        :return: None
+        """
+        self.player_usernames[client_id] = username
+        self.database.add_user_if_not_exists(username)
 
     def request_start_turn(self, client_id):
+        """
+        when error in client, client can request new turn after new start info
+        :return: None
+        """
         current_p = self.game.get_current_player_turn()
 
         if current_p.player_id != client_id:
@@ -94,6 +115,7 @@ class Handler(Server):
     def request_start_info(self, client_id):
         """
         when error in client, client can request the start info:cards, teams and strong
+        :return: None
         """
         player = self.players[client_id - 1]
 
@@ -216,8 +238,8 @@ class Handler(Server):
             self.played_cards_dict = {1: "", 2: "", 3: "", 4: ""}
 
             if self.game.game_over:
-                print("winning team:", round_over_team)
-                self.handle_game_over()
+                # print("winning team:", round_over_team)
+                self.handle_game_over(str(round_over_team))
                 return
 
         time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
@@ -281,15 +303,32 @@ class Handler(Server):
         :param client_id: int
         :return: None
         """
+        player = self.game.players[client_id - 1]
+        # getting the team that the player is not in it
+        winning_team = self.game.teams[1] if self.game.teams[0].check_if_player_in_team(player) else self.game.teams[0]
 
-        self.send_all(f"PLAYER_DISCONNECTED")
+        self.handle_winning_team(str(winning_team))
+
+        self.send_all(f"PLAYER_DISCONNECTED:{client_id}")
+        print(f"player number {client_id} has disconnected")
         self.run = False
 
-    def handle_game_over(self):
+    def handle_winning_team(self, team_str):
+        print("winning team:", team_str)
+        
+        player1, player2 = team_str.split("+")
+
+        usernames = self.player_usernames[int(player1)], self.player_usernames[int(player2)]
+
+        self.database.increment_score(usernames)
+
+    def handle_game_over(self, winning_team_str):
         """
         sending the players the game is over and closing the server
-        :return:
+        :return: None
         """
+
+        self.handle_winning_team(winning_team_str)
 
         with open("game_data.bak", "wb") as f:
             f.write(b'')
@@ -327,10 +366,12 @@ class Handler(Server):
 
         self.emergency_send_to_all_clients()
 
+        self.database.close()
         self.close()
         exit()
 
 
-a = Handler()
-sys.excepthook = a.handle_error
-a.start()
+if __name__ == "__main__":
+    a = Handler()
+    sys.excepthook = a.handle_error
+    a.start()
