@@ -113,7 +113,7 @@ class Client:
                 print("\ngame over!")
                 exit()
             elif status.startswith("PLAYER_DISCONNECTED"):
-                print("\nplayer disconnected\nexiting game")
+                print(f"\n{status}\nexiting game")
                 exit()
             elif status == "SERVER_DISCONNECTED":
                 self.handle_server_crash()
