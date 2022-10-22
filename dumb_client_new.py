@@ -138,6 +138,9 @@ class Client:
             if response == "SERVER_DISCONNECTED":
                 self.handle_server_crash()
                 continue  # using that to do a new turn
+            elif response.startswith("PLAYER_DISCONNECTED"):
+                print("player disconnected")
+                exit()
             elif response == "ok":
                 self.cards.remove(card)
             else:
@@ -149,7 +152,7 @@ class Client:
                 exit()
 
             if game_status.startswith("PLAYER_DISCONNECTED"):
-                print(game_status)
+                print("player disconnected")
                 exit()
             elif game_status == "SERVER_DISCONNECTED":
                 self.handle_server_crash()
