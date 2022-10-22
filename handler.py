@@ -38,7 +38,7 @@ class Handler(Server):
 
         super().__init__(ip, port)
 
-        self.database = Database()
+        self.database = Database("players.db")
         self.database.create_scores_table()
 
         self.players = []
