@@ -1,7 +1,7 @@
-from base_classes import *
-from server import Server
-from game import Game
-from database import Database
+from models.base_classes import *
+from controller.server import Server
+from models.game import Game
+from models.database import Database
 import random
 import time
 import pickle
@@ -17,6 +17,8 @@ BAD_PLAY_MSG = "bad_play"
 DELAY_BETWEEN_TURNS_IN_SEC = 0.6
 GENERATE_ERROR_IN_TURN = -1
 
+BACKUP_PATH = "data/game_data.bak"
+
 
 def list_to_str(lst, sep="|"):
     """
@@ -29,7 +31,7 @@ def list_to_str(lst, sep="|"):
 
 
 class Handler(Server):
-    def __init__(self, ip="0.0.0.0", port=55555):
+    def __init__(self, database, ip="0.0.0.0", port=55555):
         """
         setting up the handler server
         :param ip: str
@@ -38,8 +40,7 @@ class Handler(Server):
 
         super().__init__(ip, port)
 
-        self.database = Database("players.db")
-        self.database.create_scores_table()
+        self.database = database
 
         self.players = []
         self.player_usernames = {1: "", 2: "", 3: "", 4: ""}
@@ -269,7 +270,7 @@ class Handler(Server):
         """
 
         if os.path.isfile('game_data.bak') and os.stat("game_data.bak").st_size > 0:
-            with open("game_data.bak", "rb") as f:
+            with open(BACKUP_PATH, "rb") as f:
                 #pickle_game = pickle.load(f)
                 data = f.read()
                 pickle_game, pickle_dict = data.split(b"ThisIsASeperator")
@@ -309,7 +310,7 @@ class Handler(Server):
 
         self.handle_winning_team(str(winning_team))
 
-        with open("game_data.bak", "wb") as f:
+        with open(BACKUP_PATH, "wb") as f:
             f.write(b'')
 
         self.send_all(f"PLAYER_DISCONNECTED:{client_id}")
@@ -333,7 +334,7 @@ class Handler(Server):
 
         self.handle_winning_team(winning_team_str)
 
-        with open("game_data.bak", "wb") as f:
+        with open(BACKUP_PATH, "wb") as f:
             f.write(b'')
 
         self.send_all(f"GAME_OVER")
@@ -361,7 +362,7 @@ class Handler(Server):
         print(
             f"\n**ERROR**\ntype: {t.__name__}\nvalue: {value}\nline: {tb.tb_frame.f_lineno}")
 
-        with open("game_data.bak", "wb") as f:
+        with open(BACKUP_PATH, "wb") as f:
             #pickle.dump(self.backup_game, f)
             pickle_data = pickle.dumps(self.backup_game)
             pickle_data_dict = pickle.dumps(self.played_cards_dict_backup)
@@ -375,6 +376,8 @@ class Handler(Server):
 
 
 if __name__ == "__main__":
-    a = Handler()
+    database = Database("players.db")
+    database.create_scores_table()
+    a = Handler(database)
     sys.excepthook = a.handle_error
     a.start()

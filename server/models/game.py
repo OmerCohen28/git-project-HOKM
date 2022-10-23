@@ -1,5 +1,5 @@
-from base_classes import *
-from linked_list import *
+from models.base_classes import *
+from models.linked_list import *
 
 
 class Game:
