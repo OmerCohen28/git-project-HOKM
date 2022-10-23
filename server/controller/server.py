@@ -2,11 +2,11 @@ import socket
 import time
 from select import select
 
-SERVER_GUI = False
+# SERVER_GUI = False
 
 
 class Server:
-    def __init__(self, ip, port):
+    def __init__(self, gui, ip, port):
         """
         setting up the class of the base server which handles the socket level
         :param ip: str - server ip to bind
@@ -22,6 +22,7 @@ class Server:
 
         self.run = False
 
+        self.SERVER_GUI = gui
         self.server_gui_sock = None
 
     def __setup_socket(self):
@@ -130,7 +131,7 @@ class Server:
                     print(f"[SERVER] new connection from {addr}")
                     self.__clients.append(new_client)
 
-                    if SERVER_GUI:
+                    if self.SERVER_GUI:
                         if len(self.__clients) > 1 or self.server_gui_sock:
                             self.__client_ids[new_client] = len(self.__clients) - 1
 
@@ -166,7 +167,7 @@ class Server:
         # for clients to recv last messages
         while len(self.__messages_to_send) > 0:
             self.__send_messages(wlist)
-        time.sleep(5)
+        time.sleep(3)
 
         self.close()
 

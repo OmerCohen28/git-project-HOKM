@@ -14,7 +14,7 @@ print("testing branch")
 BAD_CARD_MSG = "bad_card"
 BAD_PLAY_MSG = "bad_play"
 
-DELAY_BETWEEN_TURNS_IN_SEC = 0.6
+# DELAY_BETWEEN_TURNS_IN_SEC = 0.1
 GENERATE_ERROR_IN_TURN = -1
 
 BACKUP_PATH = "data/game_data.bak"
@@ -31,14 +31,19 @@ def list_to_str(lst, sep="|"):
 
 
 class Handler(Server):
-    def __init__(self, database, ip="0.0.0.0", port=55555):
+    def __init__(self, database, gui, ip="0.0.0.0", port=55555):
         """
         setting up the handler server
         :param ip: str
         :param port: int
         """
 
-        super().__init__(ip, port)
+        super().__init__(gui, ip, port)
+
+        if gui:
+            self.DELAY_BETWEEN_TURNS_IN_SEC = 0.8
+        else:
+            self.DELAY_BETWEEN_TURNS_IN_SEC = 0.1
 
         self.database = database
 
@@ -155,7 +160,7 @@ class Handler(Server):
 
             # format like this: "teams:1+3|2+4,strong:DIAMONDS"
             # self.send_all(f"teams:{list_to_str(self.game.teams)},strong:{suit}")
-            time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
+            time.sleep(self.DELAY_BETWEEN_TURNS_IN_SEC)
             self.start_turn()
 
     def start_turn(self):
@@ -243,7 +248,7 @@ class Handler(Server):
                 self.handle_game_over(str(round_over_team))
                 return
 
-        time.sleep(DELAY_BETWEEN_TURNS_IN_SEC)
+        time.sleep(self.DELAY_BETWEEN_TURNS_IN_SEC)
 
         # start new turn
         self.start_turn()
