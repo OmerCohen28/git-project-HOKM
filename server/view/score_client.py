@@ -28,7 +28,7 @@ class ScoreClient:
 
         score_data.sort(key=lambda name_score_pair: -name_score_pair[1])
 
-        title_lbl = Label(self.root, text="quiz results", font=('Narkisim', 60, 'bold'), bg='white')
+        title_lbl = Label(self.root, text="Hokm results", font=('Narkisim', 60, 'bold'), bg='white')
         title_lbl.pack(pady=40)
 
         frame = Frame(self.root, bd=1)

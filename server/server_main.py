@@ -11,7 +11,7 @@ import time
 
 def main():
     # fixing some bugs
-    os.chdir(os.path.dirname(__file__))
+    # os.chdir(os.path.dirname(__file__))
 
     gui = True
 
@@ -27,7 +27,7 @@ def main():
         sys.excepthook = a.handle_error
         a.start()
 
-        time.sleep(2)
+        # time.sleep(2)
         Player.player_id = 1
 
         score_client = ScoreClient(database)
